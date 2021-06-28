@@ -1,28 +1,54 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
+import {useHistory} from "react-router-dom";
 
 function NewReservation() {
-    return <form>
+    const history = useHistory();
+
+    const initialState = {
+        "first_name": "",
+        "last_name": "",
+        "mobile_number": "",
+        "reservation_date": "",
+        "reservation_time": "",
+    };
+
+    const [formData, setFormData] = useState(initialState);
+
+    const handleChange = (event) => {
+        setFormData({
+            ...formData,
+            [event.target.name]: event.target.value
+        });
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        setFormData(initialState);
+        history.push("/dashboard");
+    }
+
+    return <form onSubmit={handleSubmit}>
         <label htmlFor = "first_name">
             First Name:
-            <input type="text" name="first_name" id="first_name" />
+            <input type="text" name="first_name" id="first_name" onChange={handleChange}/>
         </label>
         <label htmlFor="last_name">
             Last Name:
-            <input type="text" name="last_name" id="last_name" />
+            <input type="text" name="last_name" id="last_name" onChange={handleChange}/>
         </label>
         <label htmlFor="mobile_number">
             Mobile Phone Number:
-            <input type="tel" name="mobile_number" id="mobile_number" />
+            <input type="tel" name="mobile_number" id="mobile_number" onChange={handleChange}/>
         </label>
         <label htmlFor="reservation_date">
             Reservation Date:
-            <input type="date" name="reservation_date" id="reservation_date" />
+            <input type="date" name="reservation_date" id="reservation_date" onChange={handleChange}/>
         </label>
         <label htmlFor="reservation_time">
             Reservation Time:
-            <input type="time" name="reservation_time" id="reservation_time" />
+            <input type="time" name="reservation_time" id="reservation_time" onChange={handleChange}/>
         </label>
-        <button type="button">Cancel</button>
+        <button type="button" onClick = {() => history.goBack()}>Cancel</button>
         <button type="submit">Submit</button>
     </form>
 }
