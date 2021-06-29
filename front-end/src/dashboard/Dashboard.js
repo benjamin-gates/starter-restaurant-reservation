@@ -22,15 +22,26 @@ function Dashboard({ date }) {
       .catch(setReservationsError);
     return () => abortController.abort();
   }
+  //if(reservations){
+    const displayReservations = reservations.map((reservation) => {
+      return <ul key={reservation.reservation_id}>
+        <li>First Name: {reservation.first_name}</li>
+        <li>Last Name: {reservation.last_name}</li>
+        <li>Number of People in Party: {reservation.people}</li>
+        <li>Time: {reservation.reservation_time}</li>
+      </ul>
+    });
+ // }
 //console.log("reservations", reservations);
   return (
     <main>
-      <h1>Dashboard</h1>jj
+      <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
+        <h4 className="mb-0">Reservations for date: {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+      {/*{JSON.stringify(reservations)}*/}
+      {displayReservations}
     </main>
   );
 }
