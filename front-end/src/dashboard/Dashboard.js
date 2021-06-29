@@ -22,10 +22,10 @@ function Dashboard({ date }) {
       .catch(setReservationsError);
     return () => abortController.abort();
   }
-
+//console.log("reservations", reservations);
   return (
     <main>
-      <h1>Dashboard</h1>
+      <h1>Dashboard</h1>jj
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date</h4>
       </div>
