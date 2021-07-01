@@ -12,7 +12,7 @@ function NewTable(){
             </label>
             <label htmlFor="capacity">
                 Capacity:
-                <input type="integer" name="capacity" id="capacity" />
+                <input name="capacity" id="capacity" type="number" min="1"/>
             </label>
             <button type="button" onClick={() => history.goBack()}>Cancel</button>
             <button type="submit" onClick={() => history.push("/dashboard")}>Submit</button>
