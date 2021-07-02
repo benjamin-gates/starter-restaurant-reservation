@@ -5,6 +5,7 @@ function Search() {
     const [foundReservations, setFoundReservations] = useState(null);
     const mobile_number = useQuery().get("mobile_number");
     const handleFind = (event) => {
+        console.log("hello!")
         //event.preventDefault();
         //setFoundReservations("No reservations found");
     }
