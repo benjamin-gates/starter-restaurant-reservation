@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import {createReservation} from "../utils/api";
 
 function NewReservation() {
   const history = useHistory();
@@ -23,8 +24,9 @@ function NewReservation() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setFormData(initialState);
-    history.push("/dashboard");
+    createReservation(formData)
+    .then(() => setFormData(initialState))
+    .then(() => history.push("/dashboard"));
   };
 
   return (

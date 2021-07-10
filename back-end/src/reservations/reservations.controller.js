@@ -12,6 +12,14 @@ async function list(req, res) {
   });
 }
 
+async function create(req, res) {
+  const reservation = req.body;
+  res.json({
+    data: await service.create(reservation),
+  });
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
+  create: asyncErrorBoundary(create)
 };
