@@ -1,4 +1,36 @@
 .side-bar {
-  background-color: #393a44;
+  background-color: #242423;
   min-width: 200px;
+}
+
+body {
+  font-family: 'garamond', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.main-content {
+  color: #242423;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  background-color: #333533;
+  font-weight: 600;
+  line-height: 1.8;
+  text-indent: 15px;
+  color: #e8eddf;
+}
+
+h4 {
+  color: #333533;
+  font-weight: 200;
+  font-style: italic;
+}
+
+label {
+  width: 100%;
+}
+
+input {
+  width: 100%;
 }

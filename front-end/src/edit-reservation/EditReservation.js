@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-function NewReservation() {
+function EditReservation() {
   const history = useHistory();
 
   const initialState = {
@@ -29,9 +29,8 @@ function NewReservation() {
 
   return (
     <main>
-      <h1>Create Reservation</h1>
+      <h1>Edit Reservation</h1>
       <form onSubmit={handleSubmit}>
-      <div className="container-fluid">
         <label htmlFor="first_name">
           First Name:
           <input
@@ -42,8 +41,6 @@ function NewReservation() {
             onChange={handleChange}
           />
         </label>
-        </div>
-        <div className="container-fluid">
         <label htmlFor="last_name">
           Last Name:
           <input
@@ -54,8 +51,6 @@ function NewReservation() {
             onChange={handleChange}
           />
         </label>
-        </div>
-        <div className="container-fluid">
         <label htmlFor="mobile_number">
           Mobile Phone Number:
           <input
@@ -66,8 +61,6 @@ function NewReservation() {
             onChange={handleChange}
           />
         </label>
-        </div>
-        <div className="container-fluid">
         <label htmlFor="reservation_date">
           Reservation Date:
           <input
@@ -78,8 +71,6 @@ function NewReservation() {
             onChange={handleChange}
           />
         </label>
-        </div>
-        <div className="container-fluid">
         <label htmlFor="reservation_time">
           Reservation Time:
           <input
@@ -90,8 +81,6 @@ function NewReservation() {
             onChange={handleChange}
           />
         </label>
-        </div>
-        <div className="container-fluid">
         <label htmlFor="people">
           Number of People in Party:
           <input
@@ -103,17 +92,13 @@ function NewReservation() {
             onChange={handleChange}
           />
         </label>
-        <div className="btn-group" role="group" aria-label="new-reservation-group">
-        <button type="button" className="btn btn-dark btn-outline-light" onClick={() => history.goBack()}>
+        <button type="button" onClick={() => history.goBack()}>
           Cancel
         </button>
-        <button type="submit" className="btn btn-dark btn-outline-light">Submit</button>
-        </div>
-        </div>
-        
+        <button type="submit">Submit</button>
       </form>
     </main>
   );
 }
 
-export default NewReservation;
+export default EditReservation;

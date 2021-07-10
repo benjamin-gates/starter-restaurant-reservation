@@ -5,8 +5,8 @@ function SeatReservation() {
   const { reservation_id } = useParams();
   const history = useHistory();
   return (
-    <section>
-      <h2>Seat Reservation #{reservation_id}:</h2>
+    <main>
+      <h1>Seat Reservation #{reservation_id}:</h1>
       <form onSubmit={() => history.push("/dashboard")}>
         <select class="form-select" name="table_id">
           <option selected>View Available Tables</option>
@@ -18,7 +18,7 @@ function SeatReservation() {
         </button>
         <button type="submit">Submit</button>
       </form>
-    </section>
+    </main>
   );
 }
 
