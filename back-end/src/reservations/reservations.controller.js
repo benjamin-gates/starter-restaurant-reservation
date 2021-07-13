@@ -8,10 +8,20 @@ function notTuesday(req, res, next){
   const {reservation_date} = req.body;
   const date = new Date(reservation_date);
   //console.log('date:', date, 'reservation_date', reservation_date);
-  console.log('day of the week', date.getDay());
   if(date.getDay() === 1){
-    console.log('you got here');
-    next({status: 400, message: 'Reservations made on Tuesdays are not allowed'})
+    next({status: 400, message: "Restaurant is closed on Tuesdays."});
+  } else{
+    next();
+  }
+}
+
+// If reservation is scheduled on a date before today's date, then an error is returned
+function currentOrFutureDate(req, res, next){
+  const {reservation_date} = req.body;
+  const reservationDate = new Date(reservation_date);
+  const todaysDate = new Date();
+  if(reservationDate < todaysDate){
+    next({status: 400, message: "Reservations may not be made on past dates."});
   } else{
     next();
   }
@@ -37,5 +47,5 @@ async function create(req, res) {
 
 module.exports = {
   list: asyncErrorBoundary(list),
-  create: [notTuesday, asyncErrorBoundary(create)]
+  create: [notTuesday, currentOrFutureDate, asyncErrorBoundary(create)]
 };
