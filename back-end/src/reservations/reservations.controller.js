@@ -60,5 +60,5 @@ async function create(req, res) {
 
 module.exports = {
   list: asyncErrorBoundary(list),
-  create: [notTuesday, currentOrFutureDate, eligibleTimeframe,asyncErrorBoundary(create)]
+  create: [currentOrFutureDate, notTuesday, eligibleTimeframe,asyncErrorBoundary(create)]
 };

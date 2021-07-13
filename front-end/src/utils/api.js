@@ -68,12 +68,37 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
+/**
+ * 
+ * @param reservation 
+ * The request body of the new reservation
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to the newly created reservation
+ */
 export async function createReservation(reservation, signal) {
   const url = new URL(`${API_BASE_URL}/reservations/new`);
   return await fetchJson(url, {
     method: "POST",
     headers,
     body: JSON.stringify(reservation),
+    signal
+  });
+}
+
+/**
+ * 
+ * @param table
+ * The request body of the new table
+ * @returns {Promise<[table]>}
+ *  a promise that resolves to the newly created table
+ */
+
+export async function createTable(table, signal) {
+  const url = new URL(`${API_BASE_URL}/tables/new`);
+  return await fetchJson(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(table),
     signal
   });
 }
