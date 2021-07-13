@@ -87,6 +87,16 @@ export async function createReservation(reservation, signal) {
 
 /**
  * 
+ * @returns 
+ *  a promise that resolves to a possible empty array of tables saved to the database
+ */
+export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url, {headers, signal}, []);
+}
+
+/**
+ * 
  * @param table
  * The request body of the new table
  * @returns {Promise<[table]>}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { previous, next } from "../utils/date-time";
 
@@ -13,6 +13,8 @@ import { previous, next } from "../utils/date-time";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
   const history = useHistory();
 
   useEffect(loadDashboard, [date]);
@@ -23,11 +25,14 @@ function Dashboard({ date }) {
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+    listTables(abortController.signal)
+    .then(setTables)
+    .catch(setTablesError);
     return () => abortController.abort();
   }
 
   const handleCancel = () => {};
-  //if(reservations){
+
   const displayReservations = reservations.map((reservation) => {
     return (
       <ul key={reservation.reservation_id}>
@@ -49,8 +54,14 @@ function Dashboard({ date }) {
       </ul>
     );
   });
-  // }
-  //console.log("reservations", reservations);
+
+  const tablesDisplay = tables.map((table) => {
+    return <ul key={table.table_id}>
+      <li>Table Name: {table.table_name}</li>
+      <li>Capacity: {table.capacity}</li>
+    </ul>
+  });
+
   return (
     <main>
       <h1>Dashboard</h1>
@@ -117,8 +128,9 @@ function Dashboard({ date }) {
           </div>
         </div>
         <div>
-          Tables sorted by table_name will go here and display "Free" or
-          "Occupied"( with attribute: data-table-id-status=table.table_id).
+          {tablesDisplay.length ? tablesDisplay : (
+          <ErrorAlert error={tablesError} />
+          )}
         </div>
       </section>
     </main>
