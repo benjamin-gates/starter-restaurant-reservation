@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import {createReservation} from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 function NewReservation() {
   const history = useHistory();
@@ -15,6 +16,8 @@ function NewReservation() {
 
   const [formData, setFormData] = useState(initialState);
 
+  const [submissionError, setSubmissionError] = useState(null);
+
   const handleChange = (event) => {
     setFormData({
       ...formData,
@@ -26,7 +29,8 @@ function NewReservation() {
     event.preventDefault();
     createReservation(formData)
     .then(() => setFormData(initialState))
-    .then(() => history.push("/dashboard"));
+    .then(() => history.push("/dashboard"))
+    .catch(setSubmissionError)
   };
 
   return (
@@ -112,8 +116,8 @@ function NewReservation() {
         <button type="submit" className="btn btn-dark btn-outline-light">Submit</button>
         </div>
         </div>
-        
       </form>
+      <ErrorAlert error={submissionError} />
     </main>
   );
 }

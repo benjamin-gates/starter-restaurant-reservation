@@ -1,5 +1,21 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
+
+// Helper functions for reservations route:
+
+// Takes body of request, if request scheduled for a Tuesday, then an error is returned
+function notTuesday(req, res, next){
+  const {reservation_date} = req.body;
+  const date = new Date(reservation_date);
+  //console.log('date:', date, 'reservation_date', reservation_date);
+  console.log('day of the week', date.getDay());
+  if(date.getDay() === 1){
+    console.log('you got here');
+    next({status: 400, message: 'Reservations made on Tuesdays are not allowed'})
+  } else{
+    next();
+  }
+}
 /**
  * List handler for reservation resources
  */
@@ -21,5 +37,5 @@ async function create(req, res) {
 
 module.exports = {
   list: asyncErrorBoundary(list),
-  create: asyncErrorBoundary(create)
+  create: [notTuesday, asyncErrorBoundary(create)]
 };
