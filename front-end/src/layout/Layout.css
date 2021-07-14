@@ -25,6 +25,7 @@ h4 {
   color: #333533;
   font-weight: 200;
   font-style: italic;
+  text-align: center;
 }
 
 label {
@@ -33,4 +34,17 @@ label {
 
 input {
   width: 100%;
+}
+
+.dashboard-lists {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media all and (min-width:800px){
+  .dashboard-lists{
+    flex-direction: row;
+    justify-content: space-around;
+  }
 }
