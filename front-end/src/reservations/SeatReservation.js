@@ -57,7 +57,7 @@ function SeatReservation() {
                 name="table_id"
                 onChange={handleChange}
               >
-                <option selected>View AllTables</option>
+                <option selected>View All Tables</option>
                 {tablesOptions}
               </select>
               <div

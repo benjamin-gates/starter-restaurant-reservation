@@ -1,4 +1,3 @@
-const { KnexTimeoutError } = require("knex");
 const knex = require("../db/connection");
 
 function list(){
@@ -13,13 +12,18 @@ function update(tableId, reservationId){
     return knex("tables").where({table_id: tableId}).update({reservation_id: reservationId});
 }
 
-function read(tableId){
+function readTable(tableId){
     return knex("tables").where({table_id: tableId}).first();
+}
+
+function readReservation(reservationId){
+    return knex("reservations").where({reservation_id: reservationId}).first();
 }
 
 module.exports = {
     list,
     create,
     update,
-    read
+    readTable,
+    readReservation
 }

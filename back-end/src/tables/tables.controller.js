@@ -4,14 +4,31 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 /**
  * Helper functions for /tables route
  */
+
+// Returns an error if the table is already occupied by a reservation
 async function tableOccupied(req, res, next){
     const {table_id} = req.body;
-    const table = await service.read(table_id);
+    const table = await service.readTable(table_id);
     if(table.reservation_id){
         next({status: 400, message: `${table.table_name} is currently occupied.`})
     } else {
+        res.locals.table = table;
         next();
     }
+}
+
+// Returns an error if the number of people in the reservation is greater than the table's capacity
+async function enoughSeats(req, res, next){
+    const {reservation_id} = req.body;
+    const table = res.locals.table;
+    const reservation = await service.readReservation(reservation_id);
+    //console.log('enough room at the table?', table.capacity >= reservation.people);
+    if(reservation.people > table.capacity){
+        next({status: 400, message: `${table.table_name} does not have enough seats to occupy reservation ${reservation_id}`});
+    } else {
+        next();
+    }
+
 }
 
 /**
@@ -35,5 +52,5 @@ async function update(req, res, next){
 module.exports = {
     list: asyncErrorBoundary(list),
     create: asyncErrorBoundary(create),
-    update: [asyncErrorBoundary(tableOccupied), asyncErrorBoundary(update)],
+    update: [ asyncErrorBoundary(tableOccupied), asyncErrorBoundary(enoughSeats), asyncErrorBoundary(update)],
 }
