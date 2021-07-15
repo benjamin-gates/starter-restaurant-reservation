@@ -42,8 +42,9 @@ function eligibleTimeframe(req, res, next){
 }
 
 /**
- * List handler for reservation resources
+ * Handlers for reservation resources
  */
+
 async function list(req, res) {
   const {date} = req.query;
   res.json({

@@ -26,7 +26,7 @@ function ListReservations({ reservations }) {
             
           >
             <h5 className="card-title">
-              <strong>{reservation.last_name}, {reservation.first_name} at {reservation.reservation_time}</strong>
+              <strong>Reservation #{reservation.reservation_id}: {reservation.last_name}, {reservation.first_name} at {reservation.reservation_time}</strong>
             </h5>
           </div>
           <div className="card-body" >

@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { listTables } from "../utils/api";
+import { listTables, seatReservation } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function SeatReservation() {
@@ -8,6 +8,13 @@ function SeatReservation() {
   const history = useHistory();
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
+  const [seatingError, setSeatingError] = useState(null);
+
+  const initialState = {
+    reservation_id: reservation_id,
+    table_id: "",
+  };
+  const [formData, setFormData] = useState(initialState);
 
   useEffect(loadTables, [reservation_id]);
 
@@ -18,27 +25,67 @@ function SeatReservation() {
   }
 
   const tablesOptions = tables.map((table) => {
-    return <option value={table.table_id}>{table.table_name} - {table.capacity}</option>;
+    return (
+      <option value={table.table_id}>
+        {table.table_name} - {table.capacity}
+      </option>
+    );
   });
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    seatReservation(formData)
+      .then(() => setFormData(initialState))
+      .then(() => history.push("/dashboard"))
+      .catch(setSeatingError);
+  };
 
   return (
     <main>
-      <h1>Seat Reservation #{reservation_id}:</h1>{
-        tables.length ? (
-      <form onSubmit={() => history.push("/dashboard")}>
-        <select class="form-select" name="table_id">
-          <option selected>View Available Tables</option>
-          {tablesOptions}
-        </select>
-        <button type="button" onClick={() => history.goBack()}>
-          Cancel
-        </button>
-        <button type="submit">Submit</button>
-      </form>
-        ) : (
-          <ErrorAlert error={tablesError} />
-        )
-}
+      <h1>Seat Reservation #{reservation_id}:</h1>
+      {tables.length ? (
+        <section>
+          <form onSubmit={handleSubmit}>
+            <div className="container-fluid">
+              <select
+                class="form-select"
+                name="table_id"
+                onChange={handleChange}
+              >
+                <option selected>View AllTables</option>
+                {tablesOptions}
+              </select>
+              <div
+                className="btn btn-group"
+                role="group"
+                aria-label="seat-reservation-group"
+              >
+                <button
+                  type="button"
+                  className="btn btn-dark btn-outline-light"
+                  onClick={() => history.goBack()}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-dark btn-outline-light"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+          <ErrorAlert error={seatingError} />
+        </section>
+      ) : (
+        <ErrorAlert error={tablesError} />
+      )}
     </main>
   );
 }

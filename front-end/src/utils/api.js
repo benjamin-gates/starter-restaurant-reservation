@@ -112,3 +112,12 @@ export async function createTable(table, signal) {
     signal
   });
 }
+
+export async function seatReservation(seatingAssignment){
+  const url = new URL(`${API_BASE_URL}/tables/:table_id/seat/`);
+  return await fetchJson(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(seatingAssignment),
+  });
+}
