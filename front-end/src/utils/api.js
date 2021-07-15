@@ -118,8 +118,8 @@ export async function createTable(table, signal) {
  * @returns 
  * a promise that resolves to the body of the updated table
  */
-export async function seatReservation(seatingAssignment){
-  const url = new URL(`${API_BASE_URL}/tables/:table_id/seat/`);
+export async function seatReservation(table_id, seatingAssignment){
+  const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat/`);
   return await fetchJson(url, {
     method: "PUT",
     headers,

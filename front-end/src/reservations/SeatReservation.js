@@ -10,11 +10,8 @@ function SeatReservation() {
   const [tablesError, setTablesError] = useState(null);
   const [seatingError, setSeatingError] = useState(null);
 
-  const initialState = {
-    reservation_id: reservation_id,
-    table_id: "",
-  };
-  const [formData, setFormData] = useState(initialState);
+
+  const [tableId, setTableId] = useState(null);
 
   useEffect(loadTables, [reservation_id]);
 
@@ -32,22 +29,21 @@ function SeatReservation() {
     );
   });
   const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
+    setTableId(
+      event.target.value,
+    );
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    seatReservation(formData)
-      .then(() => setFormData(initialState))
+    seatReservation(tableId, {reservation_id: reservation_id})
+      .then(() => setTableId(null))
       .then(() => history.push("/dashboard"))
       .catch(setSeatingError);
   };
 
   return (
     <main>
-      <h1>Seat Reservation #{reservation_id}:</h1>
+      <h1>Seat Reservation {reservation_id}:</h1>
       {tables.length ? (
         <section>
           <form onSubmit={handleSubmit}>

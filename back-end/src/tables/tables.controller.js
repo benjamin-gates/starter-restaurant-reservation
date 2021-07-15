@@ -7,7 +7,7 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 // Returns an error if the table is already occupied by a reservation
 async function tableOccupied(req, res, next){
-    const {table_id} = req.body;
+    const {table_id} = req.params;
     const table = await service.readTable(table_id);
     if(table.reservation_id){
         next({status: 400, message: `${table.table_name} is currently occupied.`})
@@ -57,7 +57,8 @@ async function create(req, res, next){
 }
 
 async function update(req, res, next){
-    const {table_id, reservation_id} = req.body;
+    const {reservation_id} = req.body;
+    const {table_id} = req.params;
     res.json({data: await service.update(table_id, reservation_id)});
 }
 
