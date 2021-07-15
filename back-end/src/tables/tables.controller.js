@@ -31,6 +31,18 @@ async function enoughSeats(req, res, next){
 
 }
 
+// Returns an error if the table is not already occupied by a reservation
+async function tableNotOccupied(req, res, next){
+    const {table_id} = req.body;
+    const table = await service.readTable(table_id);
+    if(!table.reservation_id){
+        next({status: 400, message: `${table.table_name} is not currently occupied.`})
+    } else {
+        next();
+    }
+}
+
+
 /**
  * Handler functions for /tables route
  */
@@ -49,8 +61,16 @@ async function update(req, res, next){
     res.json({data: await service.update(table_id, reservation_id)});
 }
 
+async function destroyReservation(req, res, next){
+    const {table_id} = req.body;
+    await service.delete(table_id);
+    res.sendStatus(204);
+}     
+
 module.exports = {
     list: asyncErrorBoundary(list),
     create: asyncErrorBoundary(create),
     update: [ asyncErrorBoundary(tableOccupied), asyncErrorBoundary(enoughSeats), asyncErrorBoundary(update)],
+    delete: [asyncErrorBoundary(tableNotOccupied), asyncErrorBoundary(destroyReservation)]
+
 }

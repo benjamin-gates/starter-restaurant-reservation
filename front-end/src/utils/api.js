@@ -57,7 +57,6 @@ async function fetchJson(url, options, onCancel) {
  * @returns {Promise<[reservation]>}
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
-
 export async function listReservations(params, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
@@ -102,7 +101,6 @@ export async function listTables(signal) {
  * @returns {Promise<[table]>}
  *  a promise that resolves to the newly created table
  */
-
 export async function createTable(table, signal) {
   const url = new URL(`${API_BASE_URL}/tables/new`);
   return await fetchJson(url, {
@@ -113,11 +111,34 @@ export async function createTable(table, signal) {
   });
 }
 
+/**
+ * 
+ * @param seatingAssignment 
+ * The request body that includes the reservation_id and table_id
+ * @returns 
+ * a promise that resolves to the body of the updated table
+ */
 export async function seatReservation(seatingAssignment){
   const url = new URL(`${API_BASE_URL}/tables/:table_id/seat/`);
   return await fetchJson(url, {
     method: "PUT",
     headers,
     body: JSON.stringify(seatingAssignment),
+  });
+}
+
+/**
+ * 
+ * @param table_id 
+ * The id of the table id that is being requested to finish
+ * @returns 
+ * A status of 204 upon successful deletion of reservation id
+ */
+export async function deleteReservation(table_id){
+  const url = new URL(`${API_BASE_URL}/tables/:table_id/seat/`);
+  return await fetchJson(url, {
+    method: "DELETE",
+    headers,
+    body: JSON.stringify(table_id),
   });
 }

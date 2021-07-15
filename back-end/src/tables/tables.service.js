@@ -20,10 +20,15 @@ function readReservation(reservationId){
     return knex("reservations").where({reservation_id: reservationId}).first();
 }
 
+function destroyReservation(tableId){
+    return knex("tables").where({table_id: tableId}).update({reservation_id: null});
+}
+
 module.exports = {
     list,
     create,
     update,
     readTable,
-    readReservation
+    readReservation,
+    delete: destroyReservation
 }
