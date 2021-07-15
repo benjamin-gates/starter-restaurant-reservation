@@ -2,7 +2,6 @@ import React from "react";
 
 function ListReservations({ reservations }) {
   const handleCancel = () => {};
-  //console.log("reservations before", reservations);
   reservations.sort(function (a, b) {
     if (a.reservation_time < b.reservation_time) {
       return -1;
@@ -12,12 +11,18 @@ function ListReservations({ reservations }) {
       return 0;
     }
   });
-  //console.log("reservations after", reservations);
-  return reservations
-    .sort(function (a, b) {
-      return a.reservation_time < b.reservation_time;
-    })
+  /*function handleUpdate(reservation_id) {
+    updateStatus(reservation_id)
+    .catch((error));
+  }*/
+  const reservationsList =  reservations
     .map((reservation) => {
+      let seatButton = null;
+      if(reservation.status === "booked"){
+        seatButton = <a className="btn btn-secondary btn-outline-light" href={`reservations/${reservation.reservation_id}/seat`} >
+        Seat
+      </a>
+      }
       return (
         <div className="card" key={reservation.reservation_id} style={{width: "30rem", marginBottom: "10px"}}>
           <div
@@ -31,11 +36,10 @@ function ListReservations({ reservations }) {
           </div>
           <div className="card-body" >
               <p>Party: {reservation.people}</p>
-              <p>Mobile: {"("+reservation.mobile_number.substring(0,3)+") "+reservation.mobile_number.substring(3,6)+"-"+reservation.mobile_number.substring(6,10)}</p>
+              <p>Telephone: {"("+reservation.mobile_number.substring(0,3)+") "+reservation.mobile_number.substring(3,6)+"-"+reservation.mobile_number.substring(6,10)}</p>
+              <p data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status}</p>
               <div className="btn-group" role="group" aria-label="reservations-buttons">
-                <a className="btn btn-secondary btn-outline-light" href={`reservations/${reservation.reservation_id}/seat`}>
-                  Seat
-                </a>
+                {seatButton}
                 <a className="btn btn-secondary btn-outline-light" href={`reservations/${reservation.reservation_id}/edit`}>
                   Edit
                 </a>
@@ -47,6 +51,7 @@ function ListReservations({ reservations }) {
         </div>
       );
     });
+    return reservationsList;
 }
 
 export default ListReservations;

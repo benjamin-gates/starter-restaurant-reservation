@@ -11,7 +11,7 @@ function ListTables({ tables }) {
   const handleFinish = (event) => {
     event.preventDefault();
     if(window.confirm("Is this table ready to seat new guests? This cannot be undone.")){
-      deleteReservation({table_id: event.target.value})
+      deleteReservation(event.target.value)
        .then(() => document.location.reload())
        .catch(setDeleteError)
     }

@@ -33,7 +33,7 @@ async function enoughSeats(req, res, next){
 
 // Returns an error if the table is not already occupied by a reservation
 async function tableNotOccupied(req, res, next){
-    const {table_id} = req.body;
+    const {table_id} = req.params;
     const table = await service.readTable(table_id);
     if(!table.reservation_id){
         next({status: 400, message: `${table.table_name} is not currently occupied.`})
@@ -62,7 +62,8 @@ async function update(req, res, next){
 }
 
 async function destroyReservation(req, res, next){
-    const {table_id} = req.body;
+    const {table_id} = req.params;
+    console.log('table id', table_id, 'type', typeof table_id);
     await service.delete(table_id);
     res.sendStatus(204);
 }     

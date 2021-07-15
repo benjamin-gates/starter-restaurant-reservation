@@ -135,10 +135,9 @@ export async function seatReservation(seatingAssignment){
  * A status of 204 upon successful deletion of reservation id
  */
 export async function deleteReservation(table_id){
-  const url = new URL(`${API_BASE_URL}/tables/:table_id/seat/`);
+  const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat/`);
   return await fetchJson(url, {
     method: "DELETE",
     headers,
-    body: JSON.stringify(table_id),
   });
 }
