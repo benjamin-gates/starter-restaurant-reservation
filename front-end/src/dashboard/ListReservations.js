@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { updateStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
-function ListReservations({ reservations }) {
+function ListReservations({ reservations, searchPage=false }) {
   const handleCancel = () => {};
   //const [seatError, setSeatError] = useState(null);
   //const [reservationId, setReservationId] = useState(null);
@@ -11,7 +11,10 @@ function ListReservations({ reservations }) {
     console.log('reservationId', reservationId);
     updateStatus(reservationId, { status: "seated" }).catch(setSeatError);
   };*/
-  const filteredReservations = reservations.filter((reservation) => reservation.status !== "finished");
+  let filteredReservations = reservations;
+  if(!searchPage){
+  filteredReservations = reservations.filter((reservation) => reservation.status !== "finished");
+  }
   filteredReservations.sort(function (a, b) {
     if (a.reservation_time < b.reservation_time) {
       return -1;
@@ -24,6 +27,7 @@ function ListReservations({ reservations }) {
 
   const reservationsList = filteredReservations.map((reservation) => {
     let seatButton = null;
+    let dateElement = null;
     if (reservation.status === "booked") {
       seatButton = (
         <a
@@ -34,6 +38,10 @@ function ListReservations({ reservations }) {
           Seat
         </a>
       );
+    }
+
+    if(searchPage){
+      dateElement = <p>Date: {reservation.reservation_date}</p>
     }
     //console.log('seating error', seatError);
     return (
@@ -67,6 +75,7 @@ function ListReservations({ reservations }) {
           <p data-reservation-id-status={reservation.reservation_id}>
             Status: {reservation.status}
           </p>
+          {dateElement}
           <div
             className="btn-group"
             role="group"

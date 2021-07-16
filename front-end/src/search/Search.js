@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import useQuery from "../utils/useQuery";
 import {search} from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import ListReservations from "../dashboard/ListReservations";
 
 function Search() {
   const [foundReservations, setFoundReservations] = useState(null);
@@ -23,11 +24,7 @@ function Search() {
   }, [mobile_number]);
   let reservationsElement = null;
   if(foundReservations){
-  reservationsElement = foundReservations.map((reservation) => {
-    return (
-    <div key={reservation.reservation_id}>You found {reservation.first_name}!</div>
-    )
-  });
+  reservationsElement = <ListReservations reservations={foundReservations} searchPage="true" />
 }
 
   return (
