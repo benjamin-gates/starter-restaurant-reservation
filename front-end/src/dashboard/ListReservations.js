@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import { updateStatus } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 function ListReservations({ reservations }) {
   const handleCancel = () => {};
+  const [seatError, setSeatError] = useState(null);
+  const [reservationId, setReservationId] = useState(null);
+  /*const handleSeat = (event) => {
+    //event.preventDefault()
+    console.log('reservationId', reservationId);
+    updateStatus(reservationId, { status: "seated" }).catch(setSeatError);
+  };*/
   reservations.sort(function (a, b) {
     if (a.reservation_time < b.reservation_time) {
       return -1;
@@ -11,47 +20,78 @@ function ListReservations({ reservations }) {
       return 0;
     }
   });
-  /*function handleUpdate(reservation_id) {
-    updateStatus(reservation_id)
-    .catch((error));
-  }*/
-  const reservationsList =  reservations
-    .map((reservation) => {
-      let seatButton = null;
-      if(reservation.status === "booked"){
-        seatButton = <a className="btn btn-secondary btn-outline-light" href={`reservations/${reservation.reservation_id}/seat`} >
-        Seat
-      </a>
-      }
-      return (
-        <div className="card" key={reservation.reservation_id} style={{width: "30rem", marginBottom: "10px"}}>
+
+  const reservationsList = reservations.map((reservation) => {
+    let seatButton = null;
+    if (reservation.status === "booked") {
+      seatButton = (
+        <a
+          className="btn btn-secondary btn-outline-light"
+          href={`reservations/${reservation.reservation_id}/seat`}
+          onClick={() => updateStatus(reservation.reservation_id, {status: "seated"})}
+        >
+          Seat
+        </a>
+      );
+    }
+    console.log('seating error', seatError);
+    return (
+      <div
+        className="card"
+        key={reservation.reservation_id}
+        style={{ width: "30rem", marginBottom: "10px" }}
+      >
+        <div
+          className="card-header"
+          id={"heading" + reservation.reservation_id.toString()}
+        >
+          <h5 className="card-title">
+            <strong>
+              Reservation #{reservation.reservation_id}: {reservation.last_name}
+              , {reservation.first_name} at {reservation.reservation_time}
+            </strong>
+          </h5>
+        </div>
+        <div className="card-body">
+          <p>Party: {reservation.people}</p>
+          <p>
+            Telephone:{" "}
+            {"(" +
+              reservation.mobile_number.substring(0, 3) +
+              ") " +
+              reservation.mobile_number.substring(3, 6) +
+              "-" +
+              reservation.mobile_number.substring(6, 10)}
+          </p>
+          <p data-reservation-id-status={reservation.reservation_id}>
+            Status: {reservation.status}
+          </p>
           <div
-            className="card-header"
-            id={"heading" + reservation.reservation_id.toString()}
-            
+            className="btn-group"
+            role="group"
+            aria-label="reservations-buttons"
           >
-            <h5 className="card-title">
-              <strong>Reservation #{reservation.reservation_id}: {reservation.last_name}, {reservation.first_name} at {reservation.reservation_time}</strong>
-            </h5>
-          </div>
-          <div className="card-body" >
-              <p>Party: {reservation.people}</p>
-              <p>Telephone: {"("+reservation.mobile_number.substring(0,3)+") "+reservation.mobile_number.substring(3,6)+"-"+reservation.mobile_number.substring(6,10)}</p>
-              <p data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status}</p>
-              <div className="btn-group" role="group" aria-label="reservations-buttons">
-                {seatButton}
-                <a className="btn btn-secondary btn-outline-light" href={`reservations/${reservation.reservation_id}/edit`}>
-                  Edit
-                </a>
-                <button type="button" className="btn btn-secondary btn-outline-light" onClick={handleCancel}>
-                  Cancel
-                </button>
-              </div>
+            {seatButton}
+            <ErrorAlert error={seatError} />
+            <a
+              className="btn btn-secondary btn-outline-light"
+              href={`reservations/${reservation.reservation_id}/edit`}
+            >
+              Edit
+            </a>
+            <button
+              type="button"
+              className="btn btn-secondary btn-outline-light"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
           </div>
         </div>
-      );
-    });
-    return reservationsList;
+      </div>
+    );
+  });
+  return reservationsList;
 }
 
 export default ListReservations;

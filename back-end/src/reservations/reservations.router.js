@@ -11,4 +11,6 @@ router.route("/").get(controller.list);
 
 router.route("/new").post(controller.create);
 
+router.route("/:reservation_id/status").put(controller.updateStatus);
+
 module.exports = router;

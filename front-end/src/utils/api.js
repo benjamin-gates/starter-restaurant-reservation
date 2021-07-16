@@ -84,6 +84,15 @@ export async function createReservation(reservation, signal) {
   });
 }
 
+export async function updateStatus(reservation_id, statusUpdate) {
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/status`);
+  return await fetchJson(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(statusUpdate)
+  });
+}
+
 /**
  * 
  * @returns 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { listTables, seatReservation } from "../utils/api";
+import { listTables, seatReservation, updateStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function SeatReservation() {
@@ -9,6 +9,7 @@ function SeatReservation() {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   const [seatingError, setSeatingError] = useState(null);
+  const [updateError, setUpdateError] = useState(null);
 
 
   const [tableId, setTableId] = useState(null);
@@ -23,7 +24,7 @@ function SeatReservation() {
 
   const tablesOptions = tables.map((table) => {
     return (
-      <option value={table.table_id}>
+      <option key={table.table_id} value={table.table_id}>
         {table.table_name} - {table.capacity}
       </option>
     );
@@ -40,6 +41,12 @@ function SeatReservation() {
       .then(() => history.push("/dashboard"))
       .catch(setSeatingError);
   };
+  const handleCancel = (event) => {
+    event.preventDefault();
+    updateStatus(reservation_id, {status: "booked"})
+    .then(() => history.goBack())
+    .catch(setUpdateError);
+  }
 
   return (
     <main>
@@ -49,11 +56,11 @@ function SeatReservation() {
           <form onSubmit={handleSubmit}>
             <div className="container-fluid">
               <select
-                class="form-select"
+                className="form-select"
                 name="table_id"
                 onChange={handleChange}
               >
-                <option selected>View All Tables</option>
+                <option defaultValue>View All Tables</option>
                 {tablesOptions}
               </select>
               <div
@@ -64,7 +71,7 @@ function SeatReservation() {
                 <button
                   type="button"
                   className="btn btn-dark btn-outline-light"
-                  onClick={() => history.goBack()}
+                  onClick={handleCancel}
                 >
                   Cancel
                 </button>
@@ -78,6 +85,7 @@ function SeatReservation() {
             </div>
           </form>
           <ErrorAlert error={seatingError} />
+          <ErrorAlert error={updateError} />
         </section>
       ) : (
         <ErrorAlert error={tablesError} />
