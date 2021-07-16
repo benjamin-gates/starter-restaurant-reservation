@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 function EditReservation() {
   const history = useHistory();
+  const {reservation_id} = useParams();
 
   const initialState = {
     first_name: "",

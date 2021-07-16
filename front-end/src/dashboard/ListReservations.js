@@ -3,7 +3,15 @@ import { updateStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function ListReservations({ reservations, searchPage=false }) {
-  const handleCancel = () => {};
+  const [cancelError, setCancelError] = useState(null);
+  const handleCancel = (event) => {
+    event.preventDefault();
+    if(window.confirm("Do you want to cancel this reservation? This cannot be undone.")){
+      updateStatus(event.target.value, {status: "cancelled"})
+      .then(() => window.location.reload())
+      .catch(setCancelError);
+    }
+  };
   //const [seatError, setSeatError] = useState(null);
   //const [reservationId, setReservationId] = useState(null);
   /*const handleSeat = (event) => {
@@ -13,7 +21,7 @@ function ListReservations({ reservations, searchPage=false }) {
   };*/
   let filteredReservations = reservations;
   if(!searchPage){
-  filteredReservations = reservations.filter((reservation) => reservation.status !== "finished");
+  filteredReservations = reservations.filter((reservation) => reservation.status !== "finished" && reservation.status !== "cancelled");
   }
   filteredReservations.sort(function (a, b) {
     if (a.reservation_time < b.reservation_time) {
@@ -91,11 +99,14 @@ function ListReservations({ reservations, searchPage=false }) {
             <button
               type="button"
               className="btn btn-secondary btn-outline-light"
+              data-reservation-id-cancel={reservation.reservation_id}
+              value={reservation.reservation_id}
               onClick={handleCancel}
             >
               Cancel
             </button>
           </div>
+          <ErrorAlert error={cancelError} />
         </div>
       </div>
     );
