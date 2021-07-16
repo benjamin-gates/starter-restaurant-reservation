@@ -46,7 +46,6 @@ async function statusIsBooked(req, res, next){
   const {status} = req.body;
   const {reservation_id} = req.params;
   const reservation = await service.read(reservation_id);
-  console.log('status', reservation.status);
   if(status === "seated" && reservation.status !== "booked"){
     next({status: 400, message: "Reservation status must be 'booked' in order to seat a reservation"});
   } else {

@@ -4,14 +4,15 @@ import ErrorAlert from "../layout/ErrorAlert";
 
 function ListReservations({ reservations }) {
   const handleCancel = () => {};
-  const [seatError, setSeatError] = useState(null);
-  const [reservationId, setReservationId] = useState(null);
+  //const [seatError, setSeatError] = useState(null);
+  //const [reservationId, setReservationId] = useState(null);
   /*const handleSeat = (event) => {
     //event.preventDefault()
     console.log('reservationId', reservationId);
     updateStatus(reservationId, { status: "seated" }).catch(setSeatError);
   };*/
-  reservations.sort(function (a, b) {
+  const filteredReservations = reservations.filter((reservation) => reservation.status !== "finished");
+  filteredReservations.sort(function (a, b) {
     if (a.reservation_time < b.reservation_time) {
       return -1;
     } else if (a.reservation_time > b.reservation_time) {
@@ -21,7 +22,7 @@ function ListReservations({ reservations }) {
     }
   });
 
-  const reservationsList = reservations.map((reservation) => {
+  const reservationsList = filteredReservations.map((reservation) => {
     let seatButton = null;
     if (reservation.status === "booked") {
       seatButton = (
@@ -34,7 +35,7 @@ function ListReservations({ reservations }) {
         </a>
       );
     }
-    console.log('seating error', seatError);
+    //console.log('seating error', seatError);
     return (
       <div
         className="card"
@@ -72,7 +73,6 @@ function ListReservations({ reservations }) {
             aria-label="reservations-buttons"
           >
             {seatButton}
-            <ErrorAlert error={seatError} />
             <a
               className="btn btn-secondary btn-outline-light"
               href={`reservations/${reservation.reservation_id}/edit`}
