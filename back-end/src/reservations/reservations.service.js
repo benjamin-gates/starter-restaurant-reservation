@@ -1,7 +1,7 @@
 const knex = require("../db/connection");
 
-function list(date){
-    return knex("reservations").select("*").where({reservation_date: date});
+function list(query){
+    return knex("reservations").select("*").where(query);
 }
 
 function create(reservation){
@@ -15,6 +15,7 @@ function read(reservationId){
 function updateStatus(reservationId, newStatus){
     return knex("reservations").where({reservation_id: reservationId}).update({status: newStatus});
 }
+
 
 
 module.exports = {

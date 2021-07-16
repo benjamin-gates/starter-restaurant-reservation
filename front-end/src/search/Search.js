@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from "react";
 import useQuery from "../utils/useQuery";
+import {search} from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 function Search() {
   const [foundReservations, setFoundReservations] = useState(null);
+  const [searchError, setSearchError] = useState(null);
   const mobile_number = useQuery().get("mobile_number");
   const handleFind = (event) => {
-    //event.preventDefault();
-    //setFoundReservations("No reservations found");
+    
   };
 
   useEffect(() => {
     if (!mobile_number) {
       setFoundReservations(null);
     } else {
-      setFoundReservations(
-        `No reservations found for number: ${mobile_number}`
-      );
+      search(mobile_number)
+      .then(setFoundReservations)
+      .catch(setSearchError)
     }
     //return setFoundReservations(null);
   }, [mobile_number]);
+  let reservationsElement = null;
+  if(foundReservations){
+  reservationsElement = foundReservations.map((reservation) => {
+    return (
+    <div key={reservation.reservation_id}>You found {reservation.first_name}!</div>
+    )
+  });
+}
 
   return (
     <main>
@@ -38,7 +48,8 @@ function Search() {
           </button>
         </div>
       </form>
-      {foundReservations}
+      {reservationsElement}
+      <ErrorAlert error={searchError} />
     </main>
   );
 }

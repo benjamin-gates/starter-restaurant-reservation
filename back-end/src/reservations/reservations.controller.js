@@ -58,9 +58,24 @@ async function statusIsBooked(req, res, next){
  */
 
 async function list(req, res) {
-  const {date} = req.query;
+  const query = req.query;
+  console.log("query", query);
+  let updatedQuery = {};
+  for(let key in query){
+    if(key === "mobile_phone"){
+      updatedQuery = {
+        mobile_number: query[key]
+      };
+    } else if (key === "date"){
+      updatedQuery = {
+        reservation_date: query[key]
+      };
+    } else {
+        next({status: 400, message: `Query key: ${key} does not match your conditionals.`});
+      }
+  }
   res.json({
-    data: await service.list(date),
+    data: await service.list(updatedQuery),
   });
 }
 
@@ -78,6 +93,7 @@ async function updateStatus(req, res, next){
     data: await service.updateStatus(reservation_id, status),
   });
 }
+
 
 module.exports = {
   list: asyncErrorBoundary(list),
