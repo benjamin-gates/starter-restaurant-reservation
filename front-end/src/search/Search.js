@@ -22,7 +22,7 @@ function Search() {
         })
         .catch(setSearchError);
     }
-    //return setFoundReservations(null);
+
   }, [mobile_number]);
   let reservationsElement = null;
   if (typeof foundReservations === "object") {
@@ -53,7 +53,7 @@ function Search() {
             Find
           </button>
         </form>
-        {reservationsElement}
+        {reservationsElement ? reservationsElement : <div>Loading...</div>}
         
       </div>
     </main>

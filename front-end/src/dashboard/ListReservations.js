@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { updateStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import formatReservationTime from "../utils/format-reservation-time";
+import formatReservationDate from "../utils/format-reservation-date";
 
 function ListReservations({ reservations, searchPage=false, setEditedReservation}) {
   const [cancelError, setCancelError] = useState(null);
@@ -12,14 +14,8 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
       .catch(setCancelError);
     }
   };
-  //const [seatError, setSeatError] = useState(null);
-  //const [reservationId, setReservationId] = useState(null);
-  /*const handleSeat = (event) => {
-    //event.preventDefault()
-    console.log('reservationId', reservationId);
-    updateStatus(reservationId, { status: "seated" }).catch(setSeatError);
-  };*/
-  let filteredReservations = reservations;
+
+  let filteredReservations = formatReservationDate(formatReservationTime(reservations));
   if(!searchPage){
   filteredReservations = reservations.filter((reservation) => reservation.status !== "finished" && reservation.status !== "cancelled");
   }
@@ -116,7 +112,7 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
       </div>
     );
   });
-  return reservationsList;
+  return reservationsList.length ? reservationsList : <div>No reservations are scheduled for this date.</div>;
 }
 
 export default ListReservations;
