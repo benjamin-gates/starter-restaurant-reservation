@@ -9,16 +9,7 @@ function ListTables({ tables }) {
   const [updateError, setUpdateError] = useState(null);
   let status = null;
   let backgroundColor = null;
-  /*const handleFinish = (event) => {
-    event.preventDefault();
-    if(window.confirm("Is this table ready to seat new guests? This cannot be undone.")){
-      /*updateStatus(event.target.value.reservation_id, {status: "finished"})
-      .catch(setUpdateError);
-      deleteReservation(event.target.value.table_id)
-       .then(() => document.location.reload())
-       .catch(setDeleteError);
-    }
-  }*/
+
   return tables.map((table) => {
     if (table.reservation_id) {
       backgroundColor = "lightred";
@@ -33,7 +24,7 @@ function ListTables({ tables }) {
             .catch(setUpdateError);
             deleteReservation(table.table_id)
             .then(() => document.location.reload())
-            .catch(setUpdateError);
+            .catch(setDeleteError);
           }}>
             Finish
           </button>

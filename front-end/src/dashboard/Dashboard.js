@@ -18,8 +18,9 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   const history = useHistory();
+  //console.log("history length", history.length);
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDashboard, [date, history.length]);
 
 
   function loadDashboard() {
@@ -94,7 +95,7 @@ function Dashboard({ date }) {
             <h4 className="mb-0">Reservations for date: {date}</h4>
           </div>
           <div>
-            {reservations.length ? (
+            {reservations ? (
               <ListReservations reservations={reservations} />
             ) : (
               <div>No reservations are scheduled for this date.</div>

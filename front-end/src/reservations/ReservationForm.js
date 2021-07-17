@@ -1,10 +1,8 @@
-import React, {useState} from "react";
+import React from "react";
 import {useHistory} from "react-router-dom";
 
 function ReservationForm({handleSubmit, formData, setFormData}){
     const history = useHistory();
-    //const [formData, setFormData] = useState(initialState);
-    //console.log('form data', formData);
     const handleChange = (event) => {
         setFormData({
           ...formData,

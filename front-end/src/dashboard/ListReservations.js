@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { updateStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
-function ListReservations({ reservations, searchPage=false }) {
+function ListReservations({ reservations, searchPage=false, setEditedReservation}) {
   const [cancelError, setCancelError] = useState(null);
   const handleCancel = (event) => {
     event.preventDefault();
@@ -42,7 +42,9 @@ function ListReservations({ reservations, searchPage=false }) {
         <a
           className="btn btn-secondary btn-outline-light"
           href={`reservations/${reservation.reservation_id}/seat`}
-          onClick={() => updateStatus(reservation.reservation_id, {status: "seated"})}
+          onClick={() => {
+            updateStatus(reservation.reservation_id, {status: "seated"});
+          }}
         >
           Seat
         </a>
