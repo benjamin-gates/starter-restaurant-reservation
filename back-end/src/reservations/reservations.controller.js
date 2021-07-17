@@ -1,6 +1,5 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
-const P = require("pino");
 
 /**
  *  Helper functions for reservations route:
@@ -95,9 +94,17 @@ async function updateStatus(req, res, next){
 
 async function read(req, res, next){
   const {reservation_id} = req.params;
-  console.log("you got here for edit reservation.");
   res.json({
     data: await service.read(reservation_id)
+  });
+}
+
+async function editReservation(req, res, next){
+  const {reservation_id} = req.params;
+  const reservation = req.body;
+  console.log('reservation', reservation);
+  res.json({
+    data: await service.updateReservation(reservation_id, reservation)
   });
 }
 
@@ -106,5 +113,6 @@ module.exports = {
   list: asyncErrorBoundary(list),
   create: [currentOrFutureDate, notTuesday, eligibleTimeframe,asyncErrorBoundary(create)],
   updateStatus: [asyncErrorBoundary(statusIsBooked), asyncErrorBoundary(updateStatus)],
-  read: asyncErrorBoundary(read)
+  read: asyncErrorBoundary(read),
+  editReservation: [currentOrFutureDate, notTuesday, eligibleTimeframe, asyncErrorBoundary(editReservation)]
 };

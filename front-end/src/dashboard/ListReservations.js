@@ -34,10 +34,11 @@ function ListReservations({ reservations, searchPage=false }) {
   });
 
   const reservationsList = filteredReservations.map((reservation) => {
-    let seatButton = null;
+    let seatAndEditButtons = null;
     let dateElement = null;
     if (reservation.status === "booked") {
-      seatButton = (
+      seatAndEditButtons = (
+        <>
         <a
           className="btn btn-secondary btn-outline-light"
           href={`reservations/${reservation.reservation_id}/seat`}
@@ -45,6 +46,13 @@ function ListReservations({ reservations, searchPage=false }) {
         >
           Seat
         </a>
+        <a
+        className="btn btn-secondary btn-outline-light"
+        href={`reservations/${reservation.reservation_id}/edit`}
+      >
+        Edit
+      </a>
+      </>
       );
     }
 
@@ -89,13 +97,8 @@ function ListReservations({ reservations, searchPage=false }) {
             role="group"
             aria-label="reservations-buttons"
           >
-            {seatButton}
-            <a
-              className="btn btn-secondary btn-outline-light"
-              href={`reservations/${reservation.reservation_id}/edit`}
-            >
-              Edit
-            </a>
+            {seatAndEditButtons}
+            
             <button
               type="button"
               className="btn btn-secondary btn-outline-light"

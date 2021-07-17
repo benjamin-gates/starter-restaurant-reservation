@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import {readReservation} from "../utils/api";
+import {readReservation, updateReservation} from "../utils/api";
 import ReservationForm from "./ReservationForm";
 import ErrorAlert from "../layout/ErrorAlert";
 import formatReservationDate from "../utils/format-reservation-date";
@@ -8,7 +8,6 @@ import formatReservationDate from "../utils/format-reservation-date";
 function EditReservation() {
   const history = useHistory();
   const {reservation_id} = useParams();
-  console.log('reservation id', reservation_id);
   const [reservationError, setReservationError] = useState(null);
   const [formData, setFormData] = useState(null);
 
@@ -16,9 +15,7 @@ function EditReservation() {
 
   function loadReservation() {
     const abortController = new AbortController();
-    console.log('before set reservation error');
     setReservationError(null);
-    console.log('after set reservation error');
     readReservation(reservation_id, abortController.signal)
       .then(setFormData)
       .catch(setReservationError);
@@ -41,10 +38,12 @@ function EditReservation() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    //setFormData(initialState);
-    history.push("/dashboard");
+    updateReservation(reservation_id, formData)
+    .then(() => history.goBack())
+    .catch(setReservationError);
+    //history.push("/dashboard");
   };
-  console.log('form data', formData);
+
   return (
     formData ? (
     <main>

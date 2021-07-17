@@ -167,3 +167,12 @@ export async function readReservation(reservation_id, signal){
     signal
   });
 }
+
+export async function updateReservation(reservation_id, reservation){
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/edit`);
+  return await fetchJson(url, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(reservation)
+  });
+}

@@ -16,6 +16,10 @@ function updateStatus(reservationId, newStatus){
     return knex("reservations").where({reservation_id: reservationId}).update({status: newStatus});
 }
 
+function updateReservation(reservation_id, reservation){
+    return knex("reservations").where({reservation_id: reservation_id}).update({...reservation});
+}
+
 
 
 module.exports = {
@@ -23,4 +27,5 @@ module.exports = {
     create,
     read,
     updateStatus,
+    updateReservation,
 }
