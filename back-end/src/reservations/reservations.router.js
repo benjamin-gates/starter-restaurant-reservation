@@ -13,4 +13,6 @@ router.route("/new").post(controller.create);
 
 router.route("/:reservation_id/status").put(controller.updateStatus);
 
+router.route("/:reservation_id/edit").get(controller.read);
+
 module.exports = router;

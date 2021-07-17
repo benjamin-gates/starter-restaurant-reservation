@@ -59,7 +59,6 @@ async function statusIsBooked(req, res, next){
 
 async function list(req, res) {
   const query = req.query;
-  console.log("query", query);
   let updatedQuery = {};
   for(let key in query){
     if(key === "mobile_phone"){
@@ -94,9 +93,18 @@ async function updateStatus(req, res, next){
   });
 }
 
+async function read(req, res, next){
+  const {reservation_id} = req.params;
+  console.log("you got here for edit reservation.");
+  res.json({
+    data: await service.read(reservation_id)
+  });
+}
+
 
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [currentOrFutureDate, notTuesday, eligibleTimeframe,asyncErrorBoundary(create)],
   updateStatus: [asyncErrorBoundary(statusIsBooked), asyncErrorBoundary(updateStatus)],
+  read: asyncErrorBoundary(read)
 };

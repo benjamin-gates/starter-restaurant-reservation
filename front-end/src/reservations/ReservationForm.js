@@ -4,7 +4,7 @@ import {useHistory} from "react-router-dom";
 function ReservationForm({handleSubmit, formData, setFormData}){
     const history = useHistory();
     //const [formData, setFormData] = useState(initialState);
-    console.log('form data', formData);
+    //console.log('form data', formData);
     const handleChange = (event) => {
         setFormData({
           ...formData,
@@ -21,6 +21,7 @@ function ReservationForm({handleSubmit, formData, setFormData}){
             name="first_name"
             id="first_name"
             required="required"
+            value={formData.first_name}
             onChange={handleChange}
           />
         </label>
@@ -33,6 +34,7 @@ function ReservationForm({handleSubmit, formData, setFormData}){
             name="last_name"
             id="last_name"
             required="required"
+            value={formData.last_name}
             onChange={handleChange}
           />
         </label>
@@ -45,6 +47,7 @@ function ReservationForm({handleSubmit, formData, setFormData}){
             name="mobile_number"
             id="mobile_number"
             required="required"
+            value={formData.mobile_number}
             onChange={handleChange}
           />
         </label>
@@ -57,6 +60,7 @@ function ReservationForm({handleSubmit, formData, setFormData}){
             name="reservation_date"
             id="reservation_date"
             required="required"
+            value={formData.reservation_date}
             onChange={handleChange}
           />
         </label>
@@ -69,6 +73,7 @@ function ReservationForm({handleSubmit, formData, setFormData}){
             name="reservation_time"
             id="reservation_time"
             required="required"
+            value={formData.reservation_time}
             onChange={handleChange}
           />
         </label>
@@ -82,6 +87,7 @@ function ReservationForm({handleSubmit, formData, setFormData}){
             id="people"
             min="1"
             required="required"
+            value={formData.people}
             onChange={handleChange}
           />
         </label>

@@ -158,3 +158,12 @@ export async function search(mobile_number){
     headers,
   });
 }
+
+export async function readReservation(reservation_id, signal){
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/edit`);
+  return await fetchJson(url, {
+    method: "GET",
+    headers,
+    signal
+  });
+}

@@ -1,104 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import {readReservation} from "../utils/api";
+import ReservationForm from "./ReservationForm";
+import ErrorAlert from "../layout/ErrorAlert";
+import formatReservationDate from "../utils/format-reservation-date";
 
 function EditReservation() {
   const history = useHistory();
   const {reservation_id} = useParams();
+  console.log('reservation id', reservation_id);
+  const [reservationError, setReservationError] = useState(null);
+  const [formData, setFormData] = useState(null);
 
-  const initialState = {
+  useEffect(loadReservation, [reservation_id]);
+
+  function loadReservation() {
+    const abortController = new AbortController();
+    console.log('before set reservation error');
+    setReservationError(null);
+    console.log('after set reservation error');
+    readReservation(reservation_id, abortController.signal)
+      .then(setFormData)
+      .catch(setReservationError);
+    return () => abortController.abort();
+  }
+  /*const initialState = {
     first_name: "",
     last_name: "",
     mobile_number: "",
     reservation_date: "",
     reservation_time: "",
-  };
+  };*/
 
-  const [formData, setFormData] = useState(initialState);
-
-  const handleChange = (event) => {
+  /*const handleChange = (event) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
     });
-  };
+  };*/
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setFormData(initialState);
+    //setFormData(initialState);
     history.push("/dashboard");
   };
-
+  console.log('form data', formData);
   return (
+    formData ? (
     <main>
       <h1>Edit Reservation</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="first_name">
-          First Name:
-          <input
-            type="text"
-            name="first_name"
-            id="first_name"
-            required="required"
-            onChange={handleChange}
-          />
-        </label>
-        <label htmlFor="last_name">
-          Last Name:
-          <input
-            type="text"
-            name="last_name"
-            id="last_name"
-            required="required"
-            onChange={handleChange}
-          />
-        </label>
-        <label htmlFor="mobile_number">
-          Mobile Phone Number:
-          <input
-            type="tel"
-            name="mobile_number"
-            id="mobile_number"
-            required="required"
-            onChange={handleChange}
-          />
-        </label>
-        <label htmlFor="reservation_date">
-          Reservation Date:
-          <input
-            type="date"
-            name="reservation_date"
-            id="reservation_date"
-            required="required"
-            onChange={handleChange}
-          />
-        </label>
-        <label htmlFor="reservation_time">
-          Reservation Time:
-          <input
-            type="time"
-            name="reservation_time"
-            id="reservation_time"
-            required="required"
-            onChange={handleChange}
-          />
-        </label>
-        <label htmlFor="people">
-          Number of People in Party:
-          <input
-            type="number"
-            name="people"
-            id="people"
-            min="1"
-            required="required"
-            onChange={handleChange}
-          />
-        </label>
-        <button type="button" onClick={() => history.goBack()}>
-          Cancel
-        </button>
-        <button type="submit">Submit</button>
-      </form>
+      <ReservationForm handleSubmit={handleSubmit} formData={formatReservationDate(formData)} setFormData={setFormData} />
+      <ErrorAlert error={reservationError} />
     </main>
+    ) : (
+      <p>Loading...</p> 
+    )
   );
 }
 
