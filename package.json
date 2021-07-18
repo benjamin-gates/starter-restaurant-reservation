@@ -49,6 +49,8 @@
   "author": "Thinkful, Inc.",
   "license": "UNLICENSED",
   "dependencies": {
-    "knex": "^0.95.6"
+    "bootstrap": "^5.0.2",
+    "knex": "^0.95.6",
+    "react-bootstrap": "^1.6.1"
   }
 }

@@ -1,7 +1,7 @@
 const knex = require("../db/connection");
 
 function list(query){
-    return knex("reservations").select("*").where(query);
+    return knex("reservations").select("*").where(query).orderBy("reservation_time");
 }
 
 function create(reservation){

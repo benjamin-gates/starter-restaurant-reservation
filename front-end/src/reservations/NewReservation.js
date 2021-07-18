@@ -19,18 +19,11 @@ function NewReservation() {
 
   const [submissionError, setSubmissionError] = useState(null);
 
-  /*const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  };*/
-
   const handleSubmit = (event) => {
     event.preventDefault();
     createReservation(formData)
     .then(() => setFormData(initialState))
-    .then(() => history.push("/dashboard"))
+    .then(() => history.push(`/dashboard?date=${formData.reservation_date}`))
     .catch(setSubmissionError)
   };
 

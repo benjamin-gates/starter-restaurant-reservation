@@ -18,6 +18,17 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   const history = useHistory();
+
+  const testTime1 = '17:30';
+
+  console.log('testtime', typeof Number(testTime1.substring(0,2)) === 'number' && testTime1.substring(2,3)===":" && typeof Number(testTime1.substring(3))==='number');
+
+  const invalidNumber = Number('number');
+
+  const validNumber = Number('3');
+
+  //console.log('invalid number', invalidNumber === invalidNumber, 'valid number', validNumber === validNumber)
+
   //console.log("history length", history.length);
 
   useEffect(loadDashboard, [date, history.length]);

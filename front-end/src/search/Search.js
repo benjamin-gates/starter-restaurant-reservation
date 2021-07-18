@@ -53,7 +53,7 @@ function Search() {
             Find
           </button>
         </form>
-        {reservationsElement ? reservationsElement : <div>Loading...</div>}
+        {reservationsElement}
         
       </div>
     </main>

@@ -57,6 +57,17 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
     if(searchPage){
       dateElement = <p>Date: {reservation.reservation_date}</p>
     }
+    //const time = reservation.reservation_time < "12:00" ? `${reservation.reservation_time} AM` : `${reservation.reservation_time.substring(0,2)%'12'+reservation.reservation_time.substring(2)} PM`
+
+    const Time = () => {
+      if(reservation.reservation_time < "12:00"){
+        return `${reservation.reservation_time} AM`
+      } else if(reservation.reservation_time.substring(0, 2) === "12"){
+        return `${reservation.reservation_time} PM`
+      } else {
+        return `${reservation.reservation_time.substring(0,2)%"12"+reservation.reservation_time.substring(2)} PM`
+      }
+    };
     //console.log('seating error', seatError);
     return (
       <div
@@ -70,8 +81,8 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
         >
           <h5 className="card-title">
             <strong>
-              Reservation #{reservation.reservation_id}: {reservation.last_name}
-              , {reservation.first_name} at {reservation.reservation_time}
+              {reservation.last_name}
+              , {reservation.first_name} at <Time />
             </strong>
           </h5>
         </div>
