@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 //import {useHistory} from "react-router-dom";
-import {deleteReservation, updateStatus} from "../utils/api";
+import { deleteReservation, updateStatus } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function ListTables({ tables }) {
@@ -14,18 +14,36 @@ function ListTables({ tables }) {
     if (table.reservation_id) {
       backgroundColor = "lightred";
       status = (
-        <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
           <div data-table-id-status={table.table_id} style={{ color: "red" }}>
             <strong>occupied</strong>
           </div>
-          <button data-table-id-finish={table.table_id} type="button" className="btn btn-secondary btn-outline-light" value={table.table_id} onClick={(event) => {
-            event.preventDefault();
-            updateStatus(table.reservation_id, {status: "finished"})
-            .catch(setUpdateError);
-            deleteReservation(table.table_id)
-            .then(() => document.location.reload())
-            .catch(setDeleteError);
-          }}>
+          <button
+            data-table-id-finish={table.table_id}
+            type="button"
+            className="btn btn-secondary btn-outline-light"
+            value={table.table_id}
+            onClick={(event) => {
+              event.preventDefault();
+              if (window.confirm("Is this table ready to seat new guests?")) {
+                updateStatus(table.reservation_id, {
+                  status: "finished",
+                })
+                .then(() => console.log('you made it to update status'))
+                .catch(setUpdateError);
+                deleteReservation(table.table_id)
+                .then(() => console.log('you made it past delete reservation.'))
+                  .then(() => document.location.reload())
+                  .catch(setDeleteError);
+              }
+            }}
+          >
             Finish
           </button>
           <ErrorAlert error={deleteError} />

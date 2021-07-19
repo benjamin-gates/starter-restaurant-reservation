@@ -8,8 +8,11 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 // Checks to see if post request has all the proper fields
 function fieldsExist(req, res, next) {
   if (!req.body.data) {
-    next({ status: 400, message: "A data object is required for this request"});
-  } 
+    next({
+      status: 400,
+      message: "A data object is required for this request",
+    });
+  }
   const {
     first_name,
     last_name,
@@ -37,23 +40,40 @@ function fieldsExist(req, res, next) {
 
 // Checks each field to see if they are in the correct format
 function correctFormat(req, res, next) {
-  const { reservation_date, reservation_time, people } =
-    req.body.data;
+  const { reservation_date, reservation_time, people, status } = req.body.data;
   const formattedDate = new Date(reservation_date);
-  const formattedTime = [typeof Number(reservation_time.substring(0,2)), reservation_time.substring(2,3), typeof Number(reservation_time.substring(3))];
+  const formattedTime = [
+    typeof Number(reservation_time.substring(0, 2)),
+    reservation_time.substring(2, 3),
+    typeof Number(reservation_time.substring(3)),
+  ];
   if (people < 1) {
     next({ status: 400, message: "The people field must be greater than 0." });
-  } else if (typeof people !== 'number') {
+  } else if (Number(people) !== Number(people)) {
     next({ status: 400, message: "The people field must be a number." });
   } else if (formattedDate.getTime() !== formattedDate.getTime()) {
     next({
       status: 400,
       message: "The reservation_date must be in the correct date format.",
     });
-  } else if (formattedTime[0] !== "number" || formattedTime[1] !== ":" || formattedTime[2] !== "number") {
+  } else if (
+    formattedTime[0] !== "number" ||
+    formattedTime[1] !== ":" ||
+    formattedTime[2] !== "number"
+  ) {
     next({
       status: 400,
       message: "The reservation_time must be in the correct time format.",
+    });
+  } else if (status === "seated") {
+    next({
+      status: 400,
+      message: "The reservation status may not be seated upon creation",
+    });
+  } else if (status === "finished") {
+    next({
+      status: 400,
+      message: "The reservation status may not be finished upon creation",
     });
   } else {
     next();
@@ -104,13 +124,22 @@ function eligibleTimeframe(req, res, next) {
 
 async function statusIsBooked(req, res, next) {
   const { status } = req.body.data;
-  const { reservation_id } = req.params;
-  const reservation = await service.read(reservation_id);
-  if (status === "seated" && reservation.status !== "booked") {
+  //console.log("req.body.data", req.body.data);
+  const reservation = res.locals.reservation;
+  if (status === "seated" && reservation.status === "seated") {
     next({
       status: 400,
-      message:
-        "Reservation status must be 'booked' in order to seat a reservation",
+      message: "This reservation status is already seated",
+    });
+  } else if (status === "seated" && reservation.status === "finished") {
+    next({
+      status: 400,
+      message: "This reservation status is already finished",
+    });
+  } else if (status !== "seated" && status !== "finished" && status !== "booked") {
+    next({
+      status: 400,
+      message: "This reservation status is unknown",
     });
   } else {
     next();
@@ -120,31 +149,33 @@ async function statusIsBooked(req, res, next) {
 async function reservationExists(req, res, next) {
   const { reservation_id } = req.params;
   const reservation = await service.read(reservation_id);
-  if(!reservation){
-    next({ status: 404, message: `The reservation_id: ${reservation_id} does not exist.`})
-  }
-  else {
+  if (!reservation) {
+    next({
+      status: 404,
+      message: `The reservation_id: ${reservation_id} does not exist.`,
+    });
+  } else {
     res.locals.reservation = reservation;
     next();
-}
+  }
 }
 
 /**
  * Handlers for reservation resources
  */
 
-async function list(req, res) {
+async function list(req, res, next) {
   const query = req.query;
   let updatedQuery = {};
+  let reservations = [];
+  //console.log('query', query);
   for (let key in query) {
-    if (key === "mobile_phone") {
-      updatedQuery = {
-        mobile_number: query[key],
-      };
+    if (key === "mobile_number") {
+      updatedQuery = mobile_number.includes(query[key]);
+      reservations = await service.listForMobile(updatedQuery)
     } else if (key === "date") {
-      updatedQuery = {
-        reservation_date: query[key],
-      };
+      reservations = await service.listForDate(query[key]);
+      //console.log('reservations', reservations);
     } else {
       next({
         status: 400,
@@ -153,7 +184,7 @@ async function list(req, res) {
     }
   }
   res.status(200).json({
-    data: await service.list(updatedQuery),
+    data: reservations,
   });
 }
 
@@ -167,14 +198,15 @@ async function create(req, res) {
 async function updateStatus(req, res, next) {
   const { reservation_id } = req.params;
   const { status } = req.body.data;
-  res.json({
+  //console.log("status", status);
+  res.status(200).json({
     data: await service.updateStatus(reservation_id, status),
   });
 }
 
 function read(req, res, next) {
   const reservation = res.locals.reservation;
-    res.json({
+  res.json({
     data: reservation,
   });
 }
@@ -198,6 +230,7 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   updateStatus: [
+    asyncErrorBoundary(reservationExists),
     asyncErrorBoundary(statusIsBooked),
     asyncErrorBoundary(updateStatus),
   ],
