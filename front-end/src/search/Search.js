@@ -6,7 +6,7 @@ import ListReservations from "../dashboard/ListReservations";
 
 function Search() {
   const [foundReservations, setFoundReservations] = useState([]);
-  const [searchError, setSearchError] = useState("start search");
+  const [searchError, setSearchError] = useState(null);
   const mobile_number = useQuery().get("mobile_number");
   useEffect(() => {
     if (!mobile_number) {

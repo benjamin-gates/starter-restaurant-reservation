@@ -101,7 +101,7 @@ function enoughSeats(req, res, next) {
 // Returns a 404 error if the table_id does not exist
 async function tableExists(req, res, next) {
   const { table_id } = req.params;
-  console.log('tableId', table_id);
+  //console.log('tableId', table_id);
   const table = await service.readTable(table_id);
   if (!table) {
     next({ status: 404, message: `table_id: ${table_id} does not exist.` });

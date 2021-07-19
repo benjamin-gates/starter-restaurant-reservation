@@ -171,8 +171,8 @@ async function list(req, res, next) {
   //console.log('query', query);
   for (let key in query) {
     if (key === "mobile_number") {
-      updatedQuery = mobile_number.includes(query[key]);
-      reservations = await service.listForMobile(updatedQuery)
+      reservations = await service.listForMobile();
+      reservations = reservations.filter((reservation) => reservation.mobile_number.includes(query[key]));
     } else if (key === "date") {
       reservations = await service.listForDate(query[key]);
       //console.log('reservations', reservations);

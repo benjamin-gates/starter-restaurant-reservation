@@ -1,7 +1,7 @@
 const knex = require("../db/connection");
 
-function listForMobile(query){
-    return knex("reservations").select("*").where(query).orderBy("reservation_time");
+function listForMobile(){
+    return knex("reservations").select("*").orderBy("reservation_time");
 }
 
 function listForDate(date){

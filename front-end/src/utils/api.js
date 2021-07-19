@@ -152,7 +152,7 @@ export async function deleteReservation(table_id){
 }
 
 export async function search(mobile_number){
-  const url = new URL(`${API_BASE_URL}/reservations?mobile_phone=${mobile_number}`);
+  const url = new URL(`${API_BASE_URL}/reservations?mobile_number=${mobile_number}`);
   return await fetchJson(url, {
     method: "GET",
     headers,
