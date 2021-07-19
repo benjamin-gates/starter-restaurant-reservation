@@ -7,6 +7,9 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 // Checks to see if post request has all the proper fields
 function fieldsExist(req, res, next) {
+  if (!req.body.data) {
+    next({ status: 400, message: "A data object is required for this request"});
+  } 
   const {
     first_name,
     last_name,
@@ -15,11 +18,7 @@ function fieldsExist(req, res, next) {
     people,
     mobile_number,
   } = req.body.data;
-  console.log('req.body', req.body);
-  //console.log("request body", req.body);
-  if (!req.body.data) {
-    res.sendStatus(400);
-  } else if (!first_name || first_name.length === 0) {
+  if (!first_name || first_name.length === 0) {
     next({ status: 400, message: "The first_name field is required." });
   } else if (!last_name || last_name.length === 0) {
     next({ status: 400, message: "The last_name field is required." });
@@ -38,7 +37,7 @@ function fieldsExist(req, res, next) {
 
 // Checks each field to see if they are in the correct format
 function correctFormat(req, res, next) {
-  const { first_name, last_name, reservation_date, reservation_time, people } =
+  const { reservation_date, reservation_time, people } =
     req.body.data;
   const formattedDate = new Date(reservation_date);
   const formattedTime = [typeof Number(reservation_time.substring(0,2)), reservation_time.substring(2,3), typeof Number(reservation_time.substring(3))];
@@ -63,7 +62,7 @@ function correctFormat(req, res, next) {
 
 // Takes body of request, if request scheduled for a Tuesday, then an error is returned
 function notTuesday(req, res, next) {
-  const { reservation_date } = req.body;
+  const { reservation_date } = req.body.data;
   const date = new Date(reservation_date);
   if (date.getDay() === 1) {
     next({ status: 400, message: "Restaurant is closed on Tuesdays." });
@@ -74,7 +73,7 @@ function notTuesday(req, res, next) {
 
 // If reservation is scheduled on a date before today's date, then an error is returned
 function currentOrFutureDate(req, res, next) {
-  const { reservation_date } = req.body;
+  const { reservation_date } = req.body.data;
   const reservationDate = new Date(reservation_date);
   const todaysDate = new Date();
   //console.log('reservation date', reservationDate, 'todaysDate', todaysDate);
@@ -90,7 +89,7 @@ function currentOrFutureDate(req, res, next) {
 
 // If reservation is scheduled outside of plausible serving hours, then an error is returned
 function eligibleTimeframe(req, res, next) {
-  const { reservation_time } = req.body;
+  const { reservation_time } = req.body.data;
   const lateCutoff = "21:30";
   const earlyCutoff = "10:30";
   if (reservation_time > lateCutoff || reservation_time < earlyCutoff) {
@@ -104,7 +103,7 @@ function eligibleTimeframe(req, res, next) {
 }
 
 async function statusIsBooked(req, res, next) {
-  const { status } = req.body;
+  const { status } = req.body.data;
   const { reservation_id } = req.params;
   const reservation = await service.read(reservation_id);
   if (status === "seated" && reservation.status !== "booked") {
@@ -116,6 +115,18 @@ async function statusIsBooked(req, res, next) {
   } else {
     next();
   }
+}
+
+async function reservationExists(req, res, next) {
+  const { reservation_id } = req.params;
+  const reservation = await service.read(reservation_id);
+  if(!reservation){
+    next({ status: 404, message: `The reservation_id: ${reservation_id} does not exist.`})
+  }
+  else {
+    res.locals.reservation = reservation;
+    next();
+}
 }
 
 /**
@@ -155,23 +166,22 @@ async function create(req, res) {
 
 async function updateStatus(req, res, next) {
   const { reservation_id } = req.params;
-  const { status } = req.body;
+  const { status } = req.body.data;
   res.json({
     data: await service.updateStatus(reservation_id, status),
   });
 }
 
-async function read(req, res, next) {
-  const { reservation_id } = req.params;
-  res.json({
-    data: await service.read(reservation_id),
+function read(req, res, next) {
+  const reservation = res.locals.reservation;
+    res.json({
+    data: reservation,
   });
 }
 
 async function editReservation(req, res, next) {
   const { reservation_id } = req.params;
-  const reservation = req.body;
-  console.log("reservation", reservation);
+  const reservation = req.body.data;
   res.json({
     data: await service.updateReservation(reservation_id, reservation),
   });
@@ -191,7 +201,7 @@ module.exports = {
     asyncErrorBoundary(statusIsBooked),
     asyncErrorBoundary(updateStatus),
   ],
-  read: asyncErrorBoundary(read),
+  read: [asyncErrorBoundary(reservationExists), read],
   editReservation: [
     fieldsExist,
     correctFormat,

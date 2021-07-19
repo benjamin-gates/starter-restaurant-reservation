@@ -16,7 +16,7 @@ function ListTables({ tables }) {
       status = (
         <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
           <div data-table-id-status={table.table_id} style={{ color: "red" }}>
-            <strong>Occupied </strong>
+            <strong>occupied</strong>
           </div>
           <button data-table-id-finish={table.table_id} type="button" className="btn btn-secondary btn-outline-light" value={table.table_id} onClick={(event) => {
             event.preventDefault();
@@ -36,7 +36,7 @@ function ListTables({ tables }) {
       backgroundColor = "#C0E9C6";
       status = (
         <div data-table-id-status={table.table_id} style={{ color: "green" }}>
-          <strong>Free</strong>
+          <strong>free</strong>
         </div>
       );
     }

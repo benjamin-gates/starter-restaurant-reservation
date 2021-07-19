@@ -36,6 +36,7 @@ function SeatReservation() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log('tableId', tableId, 'seating assignment', {reservation_id: reservation_id});
     seatReservation(tableId, {reservation_id: reservation_id})
       .then(() => setTableId(null))
       .then(() => history.push("/dashboard"))

@@ -37,7 +37,7 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
         <>
         <a
           className="btn btn-secondary btn-outline-light"
-          href={`reservations/${reservation.reservation_id}/seat`}
+          href={`/reservations/${reservation.reservation_id}/seat`}
           onClick={() => {
             updateStatus(reservation.reservation_id, {status: "seated"});
           }}

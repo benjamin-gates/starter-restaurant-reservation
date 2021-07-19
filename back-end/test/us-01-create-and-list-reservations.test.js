@@ -48,7 +48,7 @@ describe("US-01 - Create and list reservations", () => {
       const response = await request(app)
         .post("/reservations")
         .set("Accept", "application/json")
-        .send({ data: {} });
+        .send({ datum: {} });
 
       expect(response.body.error).toBeDefined();
       expect(response.status).toBe(400);
