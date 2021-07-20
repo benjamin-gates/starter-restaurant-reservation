@@ -39,14 +39,16 @@ function SeatReservation() {
     console.log('tableId', tableId, 'seating assignment', {reservation_id: reservation_id});
     seatReservation(tableId, {reservation_id: reservation_id})
       .then(() => setTableId(null))
-      .then(() => history.push("/dashboard"))
       .catch(setSeatingError);
+    updateStatus(reservation_id, {status: "seated"})
+    .then(() => history.push("/dashboard"))
+    .catch(setUpdateError);
   };
   const handleCancel = (event) => {
     event.preventDefault();
-    updateStatus(reservation_id, {status: "booked"})
-    .then(() => history.goBack())
-    .catch(setUpdateError);
+    /*updateStatus(reservation_id, {status: "booked"})
+    .then(() => */history.goBack()//)
+    //.catch(setUpdateError);
   }
 
   return (

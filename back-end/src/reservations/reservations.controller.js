@@ -13,6 +13,7 @@ function fieldsExist(req, res, next) {
       message: "A data object is required for this request",
     });
   }
+  //console.log('request body', req.body.data);
   const {
     first_name,
     last_name,
@@ -49,7 +50,7 @@ function correctFormat(req, res, next) {
   ];
   if (people < 1) {
     next({ status: 400, message: "The people field must be greater than 0." });
-  } else if (Number(people) !== Number(people)) {
+  } else if (typeof people !== "number") {
     next({ status: 400, message: "The people field must be a number." });
   } else if (formattedDate.getTime() !== formattedDate.getTime()) {
     next({
@@ -136,12 +137,13 @@ async function statusIsBooked(req, res, next) {
       status: 400,
       message: "This reservation status is already finished",
     });
-  } else if (status !== "seated" && status !== "finished" && status !== "booked") {
+  } else if (status !== "seated" && status !== "finished" && status !== "booked" && status !== "cancelled") {
     next({
       status: 400,
       message: "This reservation status is unknown",
     });
   } else {
+    //console.log("you made it to next for status update");
     next();
   }
 }
@@ -196,9 +198,11 @@ async function create(req, res) {
 }
 
 async function updateStatus(req, res, next) {
+  //console.log('req.body in update status', req.body);
   const { reservation_id } = req.params;
   const { status } = req.body.data;
   //console.log("status", status);
+  //console.log('reservation before', req.body.data, 'reservation after'/*, await service.updateStatus(reservation_id, status)*/);
   res.status(200).json({
     data: await service.updateStatus(reservation_id, status),
   });
@@ -214,6 +218,8 @@ function read(req, res, next) {
 async function editReservation(req, res, next) {
   const { reservation_id } = req.params;
   const reservation = req.body.data;
+  //console.log('reservation update body', reservation);
+  //console.log('reservation update response', await service.updateReservation(reservation_id, reservation));
   res.json({
     data: await service.updateReservation(reservation_id, reservation),
   });
@@ -236,6 +242,7 @@ module.exports = {
   ],
   read: [asyncErrorBoundary(reservationExists), read],
   editReservation: [
+    asyncErrorBoundary(reservationExists),
     fieldsExist,
     correctFormat,
     currentOrFutureDate,

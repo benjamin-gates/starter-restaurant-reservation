@@ -76,6 +76,9 @@ export async function listReservations(params, signal) {
  */
 export async function createReservation(reservation, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
+  reservation.people = Number(reservation.people);
+  /*console.log('reservation body no json stringify', requestBody);
+  console.log("req body with json string", JSON.stringify(requestBody));*/
   return await fetchJson(url, {
     method: "POST",
     headers,
@@ -169,7 +172,8 @@ export async function readReservation(reservation_id, signal){
 }
 
 export async function updateReservation(reservation_id, reservation){
-  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/edit`);
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
+  reservation.people = Number(reservation.people);
   return await fetchJson(url, {
     method: "PUT",
     headers,

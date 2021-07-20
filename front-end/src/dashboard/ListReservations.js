@@ -8,6 +8,7 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
   const [cancelError, setCancelError] = useState(null);
   const handleCancel = (event) => {
     event.preventDefault();
+    //console.log('cancel event.target.value', event.target.value);
     if(window.confirm("Do you want to cancel this reservation? This cannot be undone.")){
       updateStatus(event.target.value, {status: "cancelled"})
       .then(() => window.location.reload())
@@ -29,6 +30,8 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
     }
   });
 
+  //console.log('reservations', filteredReservations);
+
   const reservationsList = filteredReservations.map((reservation) => {
     let seatAndEditButtons = null;
     let dateElement = null;
@@ -38,15 +41,15 @@ function ListReservations({ reservations, searchPage=false, setEditedReservation
         <a
           className="btn btn-secondary btn-outline-light"
           href={`/reservations/${reservation.reservation_id}/seat`}
-          onClick={() => {
+          /*onClick={() => {
             updateStatus(reservation.reservation_id, {status: "seated"});
-          }}
+          }}*/
         >
           Seat
         </a>
         <a
         className="btn btn-secondary btn-outline-light"
-        href={`reservations/${reservation.reservation_id}/edit`}
+        href={`/reservations/${reservation.reservation_id}/edit`}
       >
         Edit
       </a>

@@ -19,14 +19,13 @@ function Dashboard({ date }) {
   const [tablesError, setTablesError] = useState(null);
   const history = useHistory();
 
-
   useEffect(loadDashboard, [date, history.length]);
-
 
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
+    //.then((response) => console.log('response', response))
       .then(setReservations)
       .catch(setReservationsError);
     listTables(abortController.signal).then(setTables).catch(setTablesError);

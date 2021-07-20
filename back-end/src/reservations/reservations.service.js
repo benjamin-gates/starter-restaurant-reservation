@@ -21,9 +21,8 @@ function updateStatus(reservationId, newStatus){
 }
 
 function updateReservation(reservation_id, reservation){
-    return knex("reservations").where({reservation_id: reservation_id}).update({...reservation});
+    return knex("reservations").where({reservation_id: reservation_id}).update({...reservation}).returning("*").then((createdRecords) => createdRecords[0]);
 }
-
 
 
 module.exports = {

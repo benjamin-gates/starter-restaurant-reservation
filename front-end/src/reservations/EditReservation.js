@@ -6,6 +6,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import formatReservationDate from "../utils/format-reservation-date";
 
 function EditReservation() {
+  //console.log('you made it to the edit reservation page.');
   const history = useHistory();
   const {reservation_id} = useParams();
   const [reservationError, setReservationError] = useState(null);
@@ -39,6 +40,7 @@ function EditReservation() {
   const handleSubmit = (event) => {
     event.preventDefault();
     updateReservation(reservation_id, formData)
+    //.then((update) => console.log('response from server', update))
     .then(() => history.goBack())
     .catch(setReservationError);
     //history.push("/dashboard");
