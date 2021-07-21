@@ -12,6 +12,7 @@ if(inDevelopment)*/
 const API_BASE_URL =  
   process.env[`REACT_APP_API_BASE_URL_${inDevelopment ? "DEVELOPMENT" : "PRODUCTION"}`];
   console.log(`REACT_APP_API_BASE_URL_${inDevelopment ? "DEVELOPMENT" : "PRODUCTION"}`, 'process.env', process.env);
+  console.log('API_BASE_URL', API_BASE_URL);
 
 /**
  * Defines the default headers for these functions to work with `json-server`
@@ -63,7 +64,7 @@ async function fetchJson(url, options, onCancel) {
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
 export async function listReservations(params, signal) {
-  console.log('url', API_BASE_URL);
+  //console.log('url', API_BASE_URL);
   const url = new URL(`${API_BASE_URL}/reservations`);
   
   Object.entries(params).forEach(([key, value]) =>
