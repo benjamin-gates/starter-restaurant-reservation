@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import {readReservation, updateReservation} from "../utils/api";
+import {readReservation, updateReservation, listReservations} from "../utils/api";
 import ReservationForm from "./ReservationForm";
 import ErrorAlert from "../layout/ErrorAlert";
 import formatReservationDate from "../utils/format-reservation-date";
 
-function EditReservation() {
+function EditReservation({setReservations, setEditedReservation}) {
   //console.log('you made it to the edit reservation page.');
   const history = useHistory();
   const {reservation_id} = useParams();
@@ -37,12 +37,17 @@ function EditReservation() {
     });
   };*/
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    updateReservation(reservation_id, formData)
-    //.then((update) => console.log('response from server', update))
-    .then(() => history.goBack())
-    .catch(setReservationError);
+    try{
+    setEditedReservation(await updateReservation(reservation_id, formData));
+    //console.log('form data date', formData.reservation_date, 'date type', typeof formData.reservation_date);
+    setReservations(await listReservations({date: formData.reservation_date}));
+    //await listReservations(formData.reservation_date);
+    history.goBack();
+    } catch (error) {
+      setReservationError(error);
+    }
     //history.push("/dashboard");
   };
 

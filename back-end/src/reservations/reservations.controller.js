@@ -168,6 +168,7 @@ async function reservationExists(req, res, next) {
 
 async function list(req, res, next) {
   const query = req.query;
+  console.log('query', query);
   let updatedQuery = {};
   let reservations = [];
   //console.log('query', query);

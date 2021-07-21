@@ -4,9 +4,14 @@
  */
 import formatReservationDate from "./format-reservation-date";
 import formatReservationTime from "./format-reservation-date";
+require('dotenv').config();
 
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const inDevelopment = process.env.NODE_ENV !== "production";
+/*let API_BASE_URL = "";
+if(inDevelopment)*/
+const API_BASE_URL =  
+  process.env[`REACT_APP_API_BASE_URL_${inDevelopment ? "DEVELOPMENT" : "PRODUCTION"}`];
+  console.log(`REACT_APP_API_BASE_URL_${inDevelopment ? "DEVELOPMENT" : "PRODUCTION"}`, 'process.env', process.env);
 
 /**
  * Defines the default headers for these functions to work with `json-server`
@@ -58,7 +63,9 @@ async function fetchJson(url, options, onCancel) {
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
 export async function listReservations(params, signal) {
+  console.log('url', API_BASE_URL);
   const url = new URL(`${API_BASE_URL}/reservations`);
+  
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
