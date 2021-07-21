@@ -6,6 +6,8 @@ import { previous, next } from "../utils/date-time";
 import ListReservations from "./ListReservations";
 import ListTables from "./ListTables";
 import EditReservation from "../reservations/EditReservation";
+import NewReservation from "../reservations/NewReservation";
+import SeatReservation from "../reservations/SeatReservation";
 
 /**
  * Defines the dashboard page.
@@ -36,8 +38,14 @@ function Dashboard({ date }) {
   //if (!reservations) return null;
   return reservations ? (
     <Switch>
-      <Route exact={true} path="/reservations/:reservation_id/edit">
+      <Route path="/reservations/:reservation_id/edit">
         <EditReservation setReservations={setReservations} setEditedReservation={setEditedReservation}/>
+      </Route>
+      <Route path="/reservations/:reservation_id/seat">
+        <SeatReservation />
+      </Route>
+      <Route path="/reservations/new">
+        <NewReservation />
       </Route>
       <main>
         <h1>Dashboard</h1>
