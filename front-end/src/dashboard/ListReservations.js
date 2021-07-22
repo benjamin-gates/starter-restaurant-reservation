@@ -7,10 +7,8 @@ import formatReservationDate from "../utils/format-reservation-date";
 function ListReservations({
   reservations,
   searchPage = false,
-  date,
 }) {
   const [cancelError, setCancelError] = useState(null);
-  debugger
   const handleCancel = (event) => {
     event.preventDefault();
     if (
