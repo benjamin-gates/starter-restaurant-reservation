@@ -35,10 +35,8 @@ function ListTables({ tables }) {
                 updateStatus(table.reservation_id, {
                   status: "finished",
                 })
-                .then(() => console.log('you made it to update status'))
                 .catch(setUpdateError);
                 deleteReservation(table.table_id)
-                .then(() => console.log('you made it past delete reservation.'))
                   .then(() => document.location.reload())
                   .catch(setDeleteError);
               }

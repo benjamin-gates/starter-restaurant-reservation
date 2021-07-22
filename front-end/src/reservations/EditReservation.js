@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import {readReservation, updateReservation, listReservations} from "../utils/api";
+import {readReservation, updateReservation} from "../utils/api";
 import ReservationForm from "./ReservationForm";
 import ErrorAlert from "../layout/ErrorAlert";
 import formatReservationDate from "../utils/format-reservation-date";
 
-function EditReservation({setReservations, setEditedReservation}) {
-  //console.log('you made it to the edit reservation page.');
+function EditReservation() {
   const history = useHistory();
   const {reservation_id} = useParams();
   const [reservationError, setReservationError] = useState(null);
@@ -22,33 +21,15 @@ function EditReservation({setReservations, setEditedReservation}) {
       .catch(setReservationError);
     return () => abortController.abort();
   }
-  /*const initialState = {
-    first_name: "",
-    last_name: "",
-    mobile_number: "",
-    reservation_date: "",
-    reservation_time: "",
-  };*/
-
-  /*const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  };*/
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try{
-    setEditedReservation(await updateReservation(reservation_id, formData));
-    //console.log('form data date', formData.reservation_date, 'date type', typeof formData.reservation_date);
-    setReservations(await listReservations({date: formData.reservation_date}));
-    //await listReservations(formData.reservation_date);
-    history.goBack();
+    await updateReservation(reservation_id, formData);
+    history.push(`/dashboard?date=${formData.reservation_date}`);
     } catch (error) {
       setReservationError(error);
     }
-    //history.push("/dashboard");
   };
 
   return (

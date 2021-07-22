@@ -7,12 +7,12 @@ import formatReservationDate from "../utils/format-reservation-date";
 function ListReservations({
   reservations,
   searchPage = false,
-  setEditedReservation,
+  date,
 }) {
   const [cancelError, setCancelError] = useState(null);
+  debugger
   const handleCancel = (event) => {
     event.preventDefault();
-    //console.log('cancel event.target.value', event.target.value);
     if (
       window.confirm(
         "Do you want to cancel this reservation? This cannot be undone."
@@ -43,9 +43,10 @@ function ListReservations({
     }
   });
 
-  //console.log('reservations', filteredReservations);
-
-  const reservationsList = filteredReservations.map((reservation) => {
+  if (!filteredReservations.length){
+    return null;
+  }
+  return filteredReservations.map((reservation) => {
     let seatAndEditButtons = null;
     let dateElement = null;
     if (reservation.status === "booked") {
@@ -53,10 +54,9 @@ function ListReservations({
         <>
           <a
             className="btn btn-secondary btn-outline-light"
+            type="submit"
+            value={reservation.reservation_id}
             href={`/reservations/${reservation.reservation_id}/seat`}
-            /*onClick={() => {
-            updateStatus(reservation.reservation_id, {status: "seated"});
-          }}*/
           >
             Seat
           </a>
@@ -73,7 +73,6 @@ function ListReservations({
     if (searchPage) {
       dateElement = <p>Date: {reservation.reservation_date}</p>;
     }
-    //const time = reservation.reservation_time < "12:00" ? `${reservation.reservation_time} AM` : `${reservation.reservation_time.substring(0,2)%'12'+reservation.reservation_time.substring(2)} PM`
 
     const Time = () => {
       if (reservation.reservation_time < "12:00") {
@@ -87,7 +86,6 @@ function ListReservations({
         } PM`;
       }
     };
-    //console.log('seating error', seatError);
     return (
       <div
         className="card"
@@ -141,11 +139,7 @@ function ListReservations({
       </div>
     );
   });
-  return reservationsList.length ? (
-    reservationsList
-  ) : (
-    null
-  );
+  
 }
 
 export default ListReservations;

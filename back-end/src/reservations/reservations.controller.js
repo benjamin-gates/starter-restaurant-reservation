@@ -13,7 +13,6 @@ function fieldsExist(req, res, next) {
       message: "A data object is required for this request",
     });
   }
-  //console.log('request body', req.body.data);
   const {
     first_name,
     last_name,
@@ -97,7 +96,6 @@ function currentOrFutureDate(req, res, next) {
   const { reservation_date } = req.body.data;
   const reservationDate = new Date(reservation_date);
   const todaysDate = new Date();
-  //console.log('reservation date', reservationDate, 'todaysDate', todaysDate);
   if (reservationDate < todaysDate) {
     next({
       status: 400,
@@ -125,7 +123,6 @@ function eligibleTimeframe(req, res, next) {
 
 async function statusIsBooked(req, res, next) {
   const { status } = req.body.data;
-  //console.log("req.body.data", req.body.data);
   const reservation = res.locals.reservation;
   if (status === "seated" && reservation.status === "seated") {
     next({
@@ -143,7 +140,6 @@ async function statusIsBooked(req, res, next) {
       message: "This reservation status is unknown",
     });
   } else {
-    //console.log("you made it to next for status update");
     next();
   }
 }
@@ -168,17 +164,13 @@ async function reservationExists(req, res, next) {
 
 async function list(req, res, next) {
   const query = req.query;
-  console.log('query', query);
-  let updatedQuery = {};
   let reservations = [];
-  //console.log('query', query);
   for (let key in query) {
     if (key === "mobile_number") {
       reservations = await service.listForMobile();
       reservations = reservations.filter((reservation) => reservation.mobile_number.includes(query[key]));
     } else if (key === "date") {
       reservations = await service.listForDate(query[key]);
-      //console.log('reservations', reservations);
     } else {
       next({
         status: 400,
@@ -199,11 +191,8 @@ async function create(req, res) {
 }
 
 async function updateStatus(req, res, next) {
-  //console.log('req.body in update status', req.body);
   const { reservation_id } = req.params;
   const { status } = req.body.data;
-  //console.log("status", status);
-  //console.log('reservation before', req.body.data, 'reservation after'/*, await service.updateStatus(reservation_id, status)*/);
   res.status(200).json({
     data: await service.updateStatus(reservation_id, status),
   });
@@ -219,8 +208,6 @@ function read(req, res, next) {
 async function editReservation(req, res, next) {
   const { reservation_id } = req.params;
   const reservation = req.body.data;
-  //console.log('reservation update body', reservation);
-  //console.log('reservation update response', await service.updateReservation(reservation_id, reservation));
   res.json({
     data: await service.updateReservation(reservation_id, reservation),
   });

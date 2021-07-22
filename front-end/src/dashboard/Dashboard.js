@@ -20,12 +20,8 @@ function Dashboard({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
-  const [editedReservation, setEditedReservation] = useState(null);
   const history = useHistory();
-  //console.log('date dash', {date}, 'typeof date dash', typeof {date});
-  useEffect(loadDashboard, [date, editedReservation]);
-  //console.log('edited reservation', editedReservation);
-
+  useEffect(loadDashboard, [date]);
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -33,13 +29,16 @@ function Dashboard({ date }) {
       .then(setReservations)
       .catch(setReservationsError);
     listTables(abortController.signal).then(setTables).catch(setTablesError);
-    return () => abortController.abort();
+    return () => {
+      setReservations(undefined);
+      abortController.abort()};
   }
-  //if (!reservations) return null;
   return reservations ? (
     <Switch>
       <Route path="/reservations/:reservation_id/edit">
-        <EditReservation setReservations={setReservations} setEditedReservation={setEditedReservation}/>
+        <EditReservation
+          setReservations={setReservations}
+        />
       </Route>
       <Route path="/reservations/:reservation_id/seat">
         <SeatReservation />
@@ -47,6 +46,7 @@ function Dashboard({ date }) {
       <Route path="/reservations/new">
         <NewReservation />
       </Route>
+      <Route path="/">
       <main>
         <h1>Dashboard</h1>
         <div style={{ textAlign: "center" }}>
@@ -54,7 +54,10 @@ function Dashboard({ date }) {
             <button
               type="button"
               className="btn btn-dark btn-outline-light"
-              onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
+              onClick={() => {
+                setReservations(undefined);
+                history.push(`/dashboard?date=${previous(date)}`);
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -74,14 +77,20 @@ function Dashboard({ date }) {
             <button
               type="button"
               className="btn btn-dark btn-outline-light"
-              onClick={() => history.push("/dashboard")}
+              onClick={() => {
+                setReservations(undefined);
+                history.push("/dashboard");
+              }}
             >
               Today
             </button>
             <button
               type="button"
               className="btn btn-dark btn-outline-light"
-              onClick={() => history.push(`/dashboard?date=${next(date)}`)}
+              onClick={() => {
+                setReservations(undefined);
+                history.push(`/dashboard?date=${next(date)}`);
+              }}
             >
               Next
               <svg
@@ -109,7 +118,7 @@ function Dashboard({ date }) {
             </div>
             <div>
               {reservations ? (
-                <ListReservations reservations={reservations} />
+                <ListReservations reservations={reservations} date={date} />
               ) : (
                 <div>No reservations are scheduled for this date.</div>
               )}
@@ -118,7 +127,7 @@ function Dashboard({ date }) {
           <section className="container-fluid">
             <div>
               <h4>Tables</h4>
-              {tables.length ? (
+              {tables.length && reservations ? (
                 <ul className="list-group" style={{ width: "30rem" }}>
                   <ListTables tables={tables} />
                 </ul>
@@ -129,10 +138,9 @@ function Dashboard({ date }) {
           </section>
         </div>
       </main>
-      </Switch>
-  ) : (
-    null
-  );
+      </Route>
+    </Switch>
+  ) : null;
 }
 
 export default Dashboard;

@@ -9,8 +9,6 @@ function SeatReservation() {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   const [seatingError, setSeatingError] = useState(null);
-  const [updateError, setUpdateError] = useState(null);
-
 
   const [tableId, setTableId] = useState(null);
 
@@ -30,26 +28,19 @@ function SeatReservation() {
     );
   });
   const handleChange = (event) => {
-    setTableId(
-      event.target.value,
-    );
+    setTableId(event.target.value);
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('tableId', tableId, 'seating assignment', {reservation_id: reservation_id});
-    seatReservation(tableId, {reservation_id: reservation_id})
+    seatReservation(tableId, { reservation_id: reservation_id })
       .then(() => setTableId(null))
+      .then(() => history.push("/dashboard"))
       .catch(setSeatingError);
-    updateStatus(reservation_id, {status: "seated"})
-    .then(() => history.push("/dashboard"))
-    .catch(setUpdateError);
   };
   const handleCancel = (event) => {
     event.preventDefault();
-    /*updateStatus(reservation_id, {status: "booked"})
-    .then(() => */history.goBack()//)
-    //.catch(setUpdateError);
-  }
+    history.goBack();
+  };
 
   return (
     <main>
@@ -88,7 +79,6 @@ function SeatReservation() {
             </div>
           </form>
           <ErrorAlert error={seatingError} />
-          <ErrorAlert error={updateError} />
         </section>
       ) : (
         <ErrorAlert error={tablesError} />

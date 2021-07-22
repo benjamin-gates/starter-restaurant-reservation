@@ -9,7 +9,6 @@ import Layout from "./layout/Layout";
  * @returns {JSX.Element}
  */
 function App() {
-  console.log('process.env', process.env.REACT_APP_API_BASE_URL);
   return (
     <Switch>
       <Route path="/">

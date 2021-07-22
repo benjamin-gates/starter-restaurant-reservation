@@ -13,7 +13,6 @@ function correctBody(req, res, next) {
       message: "A data object is required for this request.",
     });
   }
-  //console.log('req body', req.body, 'req.body.data', !req.body.data);
   const { table_name, capacity } = req.body.data;
   if (!table_name) {
     next({ status: 400, message: "A table_name is required." });
@@ -87,11 +86,10 @@ function enoughSeats(req, res, next) {
   const { reservation_id } = req.body.data;
   const table = res.locals.table;
   const reservation = res.locals.reservation;
-  //console.log('enough room at the table?', table.capacity >= reservation.people);
   if (reservation.people > table.capacity) {
     next({
       status: 400,
-      message: `${table.table_name} does not have sufficient capacity to occupy reservation ${reservation_id}`,
+      message: `${table.table_name} is occupied or does not have sufficient capacity for reservation ${reservation_id}`,
     });
   } else {
     next();
@@ -101,7 +99,6 @@ function enoughSeats(req, res, next) {
 // Returns a 404 error if the table_id does not exist
 async function tableExists(req, res, next) {
   const { table_id } = req.params;
-  //console.log('tableId', table_id);
   const table = await service.readTable(table_id);
   if (!table) {
     next({ status: 404, message: `table_id: ${table_id} does not exist.` });
