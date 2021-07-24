@@ -52,8 +52,6 @@ function ListReservations({
         <>
           <a
             className="btn btn-secondary btn-outline-light"
-            type="submit"
-            value={reservation.reservation_id}
             href={`/reservations/${reservation.reservation_id}/seat`}
           >
             Seat

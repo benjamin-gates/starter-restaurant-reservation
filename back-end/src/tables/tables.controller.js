@@ -28,6 +28,7 @@ function correctBody(req, res, next) {
   }
 }
 
+// Validates that the update request has data and a reservation_id
 function updateCorrectBody(req, res, next) {
   if (!req.body.data) {
     next({
@@ -72,6 +73,7 @@ async function reservationExists(req, res, next) {
   }
 }
 
+// Returns an error if the reservation is already seated
 function reservationSeated(req, res, next){
     const {status} = res.locals.reservation;
     if(status === "seated"){
@@ -89,7 +91,7 @@ function enoughSeats(req, res, next) {
   if (reservation.people > table.capacity) {
     next({
       status: 400,
-      message: `${table.table_name} is occupied or does not have sufficient capacity for reservation ${reservation_id}`,
+      message: `${table.table_name} or does not have sufficient capacity for reservation ${reservation_id}`,
     });
   } else {
     next();
@@ -125,26 +127,29 @@ async function tableNotOccupied(req, res, next) {
  * Handler functions for /tables route
  */
 
+// Lists all tables ordered by table_name
 async function list(req, res, next) {
   res.status(200).json({ data: await service.list() });
 }
 
+// Creates a new table
 async function create(req, res, next) {
   const table = req.body.data;
   res.status(201).json({ data: await service.create(table) });
 }
 
+// Adds a reservation_id to a table
 async function update(req, res, next) {
   const { reservation_id } = req.body.data;
   const { table_id } = req.params;
   res.status(200).json({ data: await service.update(table_id, reservation_id) });
 }
 
+// Removes the reservation_id from a table
 async function destroyReservation(req, res, next) {
   const { table_id } = req.params;
   const table = res.locals.table;
   res.status(200).json( {data: await service.delete(table_id, table.reservation_id)});
-  //res.sendStatus(200);
 }
 
 module.exports = {

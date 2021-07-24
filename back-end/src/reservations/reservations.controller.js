@@ -121,6 +121,7 @@ function eligibleTimeframe(req, res, next) {
   }
 }
 
+// Returns an error if trying to seat a reservation that is either seated or finished
 async function statusIsBooked(req, res, next) {
   const { status } = req.body.data;
   const reservation = res.locals.reservation;
@@ -144,6 +145,7 @@ async function statusIsBooked(req, res, next) {
   }
 }
 
+// Validation to insure that the reservation_id with the update exists
 async function reservationExists(req, res, next) {
   const { reservation_id } = req.params;
   const reservation = await service.read(reservation_id);
@@ -161,7 +163,7 @@ async function reservationExists(req, res, next) {
 /**
  * Handlers for reservation resources
  */
-
+// Lists reservation by date query or mobile_number query ordered by reservation_time
 async function list(req, res, next) {
   const query = req.query;
   let reservations = [];
@@ -183,6 +185,7 @@ async function list(req, res, next) {
   });
 }
 
+// Creates a new reservation
 async function create(req, res) {
   const reservation = req.body.data;
   res.status(201).json({
@@ -190,6 +193,7 @@ async function create(req, res) {
   });
 }
 
+// Updates the reservation status to either seated or finished, depending on the body of the request
 async function updateStatus(req, res, next) {
   const { reservation_id } = req.params;
   const { status } = req.body.data;
@@ -198,6 +202,7 @@ async function updateStatus(req, res, next) {
   });
 }
 
+// Reads the information from one reservation
 function read(req, res, next) {
   const reservation = res.locals.reservation;
   res.json({
@@ -205,6 +210,7 @@ function read(req, res, next) {
   });
 }
 
+// Edits a reservation
 async function editReservation(req, res, next) {
   const { reservation_id } = req.params;
   const reservation = req.body.data;
